@@ -396,6 +396,50 @@
   </section>
 </section>
 
+  <script>
+  // Function to trigger animations when a tab is shown
+  function animateTab(tabId) {
+    const tab = document.getElementById(tabId);
+    if (!tab) return;
+
+    // Find all animatable elements inside the tab
+    const animatables = tab.querySelectorAll(".fade-section, .animate-card, .animate-img, .animate-form");
+
+    // Reset and re-trigger animation
+    animatables.forEach(el => {
+      el.classList.remove("visible"); // reset
+      void el.offsetWidth;            // force reflow (important!)
+      el.classList.add("visible");    // trigger again
+    });
+  }
+
+  // Example tab switching logic
+  const tabs = document.querySelectorAll(".tab-content");
+  const navLinks = document.querySelectorAll(".nav-link"); // adjust selector to your tab buttons
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const targetId = link.getAttribute("href").replace("#", "");
+
+      // Hide all tabs
+      tabs.forEach(tab => tab.classList.add("hidden"));
+
+      // Show selected tab
+      const targetTab = document.getElementById(targetId);
+      targetTab.classList.remove("hidden");
+
+      // Animate its content
+      animateTab(targetId);
+    });
+  });
+
+  // Initial animation on page load
+  window.addEventListener("load", () => {
+    animateTab("collections"); // or whichever tab is default
+  });
+</script>
+
 <!-- ANIMATION STYLES -->
 <style>
   .fade-section {
@@ -553,6 +597,7 @@
 </body>
 
 </html>
+
 
 
 
