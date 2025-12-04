@@ -187,6 +187,57 @@
       object-fit:cover;
     }
 
+    /* Video card & embed */
+    .video-card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform .25s ease, box-shadow .25s ease;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    .video-card:hover { transform: translateY(-6px); box-shadow: 0 18px 36px rgba(214,51,132,0.10); }
+    .video-thumb {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      height: 0;
+      padding-bottom: 56.25%; /* 16:9 */
+    }
+    .video-thumb .play {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      font-size: 28px;
+      color: var(--pink);
+      border: 6px solid rgba(214,51,132,0.06);
+    }
+    .video-card .card-body { padding: 12px 16px; display:flex; gap:12px; align-items:center; justify-content:space-between; }
+    .video-meta { display:flex; gap:8px; align-items:center; }
+
+    /* Responsive iframe container for modal */
+    .video-embed {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+    }
+    .video-embed iframe {
+      position: absolute;
+      top:0; left:0; width:100%; height:100%; border:0; border-radius:10px;
+    }
+
     /* Contact form */
     .contact-form {
       max-width: 720px;
@@ -299,6 +350,7 @@
       .hero { padding: 72px 0; }
       .hero-gallery { width:100%; grid-template-columns: repeat(2,1fr); }
       .modal-content { width: 94vw; }
+      .video-card { max-width: 680px; margin: 0 auto; }
     }
   </style>
 </head>
@@ -536,6 +588,24 @@
           <p class="section-desc">Get inspired by curated outfits and editorial looks. Click any image to open a large preview.</p>
         </div>
 
+        <!-- Featured video card (click to open modal) -->
+        <div style="max-width:980px; margin:0 auto 22px;">
+          <div class="video-card" role="button" aria-pressed="false" tabindex="0" data-video-id="_4TPfqJcFGY" id="featuredVideoCard" aria-label="Play our Lookbook video">
+            <div class="video-thumb" style="background-image: url('https://img.youtube.com/vi/_4TPfqJcFGY/maxresdefault.jpg');" aria-hidden="true">
+              <div class="play" aria-hidden="true">▶</div>
+            </div>
+            <div class="card-body">
+              <div>
+                <h3 style="color:var(--pink); font-size:1.05rem; margin:0;">Behind the Scenes — Fashion Box Lookbook</h3>
+                <p style="margin:4px 0 0; color:#666; font-size:.95rem;">A quick look at the making of our latest editorial.</p>
+              </div>
+              <div class="video-meta">
+                <span class="badge">WATCH</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="gallery-grid">
           <img class="animate-img" loading="lazy" src="https://th.bing.com/th/id/OIP.SYVjJGXAqIXiE3aZE1tWKwHaJu?w=202&h=265&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Editorial Look 1">
           <img class="animate-img" loading="lazy" src="https://cdn.shopify.com/s/files/1/0273/0347/7337/products/DSC7632_2_8428eebe-5656-4d45-9703-4cca8fa8b160.jpg?v=1639032466" alt="Editorial Look 2"[...]
@@ -547,6 +617,20 @@
       </div>
     </section>
   </section>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="video-modal-title">
+    <div class="modal-content" style="grid-template-columns:1fr; width:min(980px,96vw); padding:18px;">
+      <button class="modal-close" aria-label="Close video">✕</button>
+      <div style="width:100%;">
+        <h3 id="video-modal-title" style="color:var(--pink); margin-bottom:8px;">Fashion Box — Lookbook Video</h3>
+        <div class="video-embed" id="videoEmbed" aria-live="polite" aria-busy="false">
+          <!-- iframe is injected by JS when opened to avoid loading it on page load -->
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop"></div>
+  </div>
 
   <!-- ABOUT TAB -->
   <section id="about" class="tab-content hidden">
@@ -865,6 +949,54 @@
 
       modalCloseBtns.forEach(btn => btn.addEventListener("click", closeModal));
       backdrop.forEach(b => b.addEventListener("click", closeModal));
+
+      // Video modal logic (lazy load iframe)
+      const videoModal = document.getElementById("videoModal");
+      const videoEmbed = document.getElementById("videoEmbed");
+      const featuredVideoCard = document.getElementById("featuredVideoCard");
+      const videoModalClose = videoModal.querySelector(".modal-close");
+      const VIDEO_BASE = "https://www.youtube.com/embed/";
+      // Use the provided video ID from the card's data attribute
+      function openVideoModal(videoId) {
+        if (!videoId) return;
+        // Build the iframe src with autoplay and modest branding
+        const src = VIDEO_BASE + encodeURIComponent(videoId) + "?autoplay=1&rel=0&modestbranding=1";
+        // Insert iframe only when needed
+        videoEmbed.setAttribute("aria-busy", "true");
+        videoEmbed.innerHTML = '<iframe src="' + src + '" title="Lookbook video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        videoModal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+        // set focus for accessibility
+        videoModal.querySelector(".modal-close")?.focus();
+      }
+      function closeVideoModal() {
+        videoModal.classList.add("hidden");
+        // remove iframe to stop playback
+        videoEmbed.innerHTML = "";
+        videoEmbed.setAttribute("aria-busy", "false");
+        document.body.style.overflow = "";
+        // return focus to the thumbnail card
+        featuredVideoCard?.focus();
+      }
+
+      // Click / keyboard handlers for video card
+      if (featuredVideoCard) {
+        featuredVideoCard.addEventListener("click", () => {
+          openVideoModal(featuredVideoCard.dataset.videoId);
+        });
+        featuredVideoCard.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openVideoModal(featuredVideoCard.dataset.videoId);
+          }
+        });
+      }
+
+      videoModalClose.addEventListener("click", closeVideoModal);
+      // backdrop specifically for video modal
+      videoModal.querySelector(".modal-backdrop")?.addEventListener("click", closeVideoModal);
+
+      // Global keydown: close any open modals on Escape
       document.addEventListener("keydown", e => {
         if (e.key === "Escape") {
           if (!modal.classList.contains("hidden")) closeModal();
@@ -872,6 +1004,7 @@
             document.getElementById("sizeModal").classList.add("hidden");
             document.body.style.overflow = "";
           }
+          if (!videoModal.classList.contains("hidden")) closeVideoModal();
         }
       });
 
@@ -925,6 +1058,7 @@
   </script>
 </body>
 </html>
+
 
 
 
