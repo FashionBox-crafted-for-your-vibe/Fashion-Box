@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fashion Box</title>
+  <meta name="description" content="Fashion Box – curated pink collections, lookbook, and limited edition styles.">
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/yadavaarnav19-sketch/Fashion-Box/refs/heads/main/logo.png">
-
-
 
   <!-- Embedded CSS (theme + layout + modal + responsiveness) -->
   <style>
@@ -19,20 +18,23 @@
       --pink-soft: #ffe4ec;
       --pink-bg: #fff0f5;
       --text: #333;
+      --container: 1100px;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
       background: #fff;
       color: var(--text);
       line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* Utilities */
     .hidden { display: none !important; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .container { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
 
     /* Header */
     header {
@@ -41,6 +43,7 @@
       z-index: 50;
       background: var(--pink-soft);
       border-bottom: 1px solid rgba(0,0,0,0.06);
+      backdrop-filter: blur(6px);
     }
     .header-inner {
       display: flex;
@@ -48,7 +51,8 @@
       justify-content: space-between;
       padding: 14px 0;
     }
-    .logo { font-size: 1.8rem; font-weight: bold; color: var(--pink); }
+    .logo { font-size: 1.8rem; font-weight: bold; color: var(--pink); display:flex; gap:10px; align-items:center; }
+    .logo img { height:36px; width:auto; border-radius:6px; object-fit:contain; }
 
     /* Nav */
     #menu-toggle {
@@ -77,19 +81,29 @@
     nav a:hover { color: var(--pink-dark); }
     nav a.active { border-bottom-color: var(--pink); }
 
+    /* Quick actions */
+    .header-actions { display:flex; gap:12px; align-items:center; }
+    .icon-btn {
+      background:transparent; border:1px solid rgba(0,0,0,0.06);
+      padding:8px 10px; border-radius:10px; cursor:pointer;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+
     /* Hero */
     .hero {
       background: linear-gradient(to right, #ffd6e8, #fff);
       padding: 90px 0;
       text-align: center;
     }
+    .hero-inner { display:flex; gap:28px; align-items:center; justify-content:center; flex-wrap:wrap; }
     .hero-text {
+      max-width: 640px;
       opacity: 0;
       transform: translateY(18px);
       animation: fadeUp .9s ease-out forwards;
     }
-    .hero h1 { font-size: 2.8rem; color: var(--pink); margin-bottom: 16px; }
-    .hero p { font-size: 1.15rem; margin-bottom: 26px; color: #4a4a4a; }
+    .hero h1 { font-size: 2.8rem; color: var(--pink); margin-bottom: 16px; line-height:1.05; }
+    .hero p { font-size: 1.15rem; margin-bottom: 18px; color: #4a4a4a; }
     .btn {
       background: var(--pink);
       color: #fff;
@@ -102,6 +116,9 @@
     }
     .btn:hover { background: var(--pink-dark); transform: translateY(-1px); }
 
+    .hero-gallery { display:grid; grid-template-columns: repeat(2,1fr); gap:12px; width:420px; }
+    .hero-gallery img { width:100%; height:100%; object-fit:cover; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.08); }
+
     /* Section headers */
     .section-header {
       text-align: center;
@@ -109,7 +126,7 @@
     }
     .section-title { font-size: 2rem; color: var(--pink); }
     .section-desc {
-      max-width: 700px;
+      max-width: 880px;
       margin: 10px auto 0;
       color: var(--pink-dark);
       font-size: 1.05rem;
@@ -121,30 +138,36 @@
       padding: 52px 0;
     }
     .product-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 24px;
+      align-items:stretch;
     }
     .product-card {
       background: #fff;
       border-radius: 12px;
-      width: 290px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       overflow: hidden;
       transition: transform .25s ease, box-shadow .25s ease;
       cursor: pointer;
+      display:flex;
+      flex-direction:column;
     }
     .product-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 8px 20px rgba(214,51,132,0.22);
+      box-shadow: 0 14px 28px rgba(214,51,132,0.12);
     }
-    .product-card img { width: 100%; display: block; }
-    .product-card .card-body { padding: 12px 14px 16px; text-align: center; }
-    .product-card h3 { color: var(--pink); margin-bottom: 6px; font-size: 1.1rem; }
-    .product-card p { font-weight: 700; color: #2a2a2a; }
+    .product-card img { width: 100%; display: block; height: 260px; object-fit:cover; }
+    .product-card .card-body { padding: 12px 14px 16px; text-align: center; flex:1; display:flex; flex-direction:column; justify-content:space-between; }
+    .product-card h3 { color: var(--pink); margin-bottom: 8px; font-size: 1.1rem; }
+    .product-card p { font-weight: 700; color: #2a2a2a; margin-bottom:10px; }
+    .product-meta { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:10px; }
 
-    /* Themed sections (Collections, Lookbook, Contact) */
+    /* Badges */
+    .badge { display:inline-block; background:var(--pink); color:#fff; padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.8rem; }
+
+    /* Themed sections (Collections, Lookbook, Contact, About) */
     .themed {
       background: var(--pink-bg);
       padding: 60px 0;
@@ -160,11 +183,13 @@
       width: 100%;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      height: 320px;
+      object-fit:cover;
     }
 
     /* Contact form */
     .contact-form {
-      max-width: 640px;
+      max-width: 720px;
       margin: 0 auto;
       display: grid;
       gap: 14px;
@@ -180,19 +205,20 @@
     .form-row input:focus, .form-row textarea:focus {
       outline: none;
       border-color: var(--pink);
-      box-shadow: 0 0 0 3px rgba(214,51,132,0.18);
+      box-shadow: 0 0 0 3px rgba(214,51,132,0.12);
     }
 
     /* Footer */
     footer {
       background: var(--pink-soft);
       text-align: center;
-      padding: 18px 0;
+      padding: 22px 0;
       color: var(--pink-dark);
       font-size: .98rem;
       border-top: 1px solid rgba(0,0,0,0.06);
       margin-top: 30px;
     }
+    .footer-grid { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; align-items:center; }
 
     /* Modal */
     .modal {
@@ -213,16 +239,19 @@
       z-index: 1;
       background: #fff;
       border-radius: 14px;
-      width: min(560px, 92vw);
+      width: min(760px, 96vw);
       padding: 18px;
       box-shadow: 0 14px 36px rgba(0,0,0,0.25);
       text-align: center;
       display: grid;
       gap: 12px;
+      grid-template-columns: 1fr 1fr;
+      align-items:center;
     }
-    .modal-content img { width: 100%; border-radius: 12px; }
-    .modal-title { color: var(--pink); font-size: 1.4rem; }
-    .modal-price { font-weight: 700; color: #222; }
+    .modal-content img { width: 100%; border-radius: 12px; height:320px; object-fit:cover; }
+    .modal-info { text-align:left; padding:6px 12px; }
+    .modal-title { color: var(--pink); font-size: 1.4rem; margin-bottom:8px; }
+    .modal-price { font-weight: 700; color: #222; margin-bottom:12px; display:block; }
     .modal-close {
       position: absolute;
       top: 10px; right: 10px;
@@ -233,14 +262,24 @@
       cursor: pointer;
     }
 
+    /* Size Guide Modal */
+    .size-modal .modal-content { width: min(900px, 98vw); grid-template-columns: 1fr; padding:24px; }
+    .size-table { width:100%; border-collapse:collapse; margin-top:12px; }
+    .size-table th, .size-table td { padding:10px; border:1px solid #eee; text-align:center; }
+
     /* Animations */
     @keyframes fadeUp {
       to { opacity: 1; transform: translateY(0); }
     }
 
     /* Responsive */
+    @media (max-width: 1100px) {
+      .modal-content { grid-template-columns: 1fr; }
+      .hero-gallery { width:360px; }
+    }
     @media (max-width: 900px) {
       .hero h1 { font-size: 2.3rem; }
+      .product-card img { height: 220px; }
       .product-card { width: 45%; max-width: 320px; }
     }
     @media (max-width: 640px) {
@@ -258,6 +297,8 @@
       nav ul.show { display: flex; }
       .product-card { width: 100%; max-width: 360px; }
       .hero { padding: 72px 0; }
+      .hero-gallery { width:100%; grid-template-columns: repeat(2,1fr); }
+      .modal-content { width: 94vw; }
     }
   </style>
 </head>
@@ -265,54 +306,179 @@
   <!-- Header -->
   <header>
     <div class="container header-inner">
-      <div class="logo">Fashion Box</div>
-      <button id="menu-toggle" aria-label="Toggle navigation">☰</button>
-      <nav>
-        <ul>
-          <li><a href="#" data-tab="home" class="active">Home</a></li>
-          <li><a href="#" data-tab="collections">Collections</a></li>
-          <li><a href="#" data-tab="lookbook">Lookbook</a></li>
-          <li><a href="#" data-tab="contact">Contact</a></li>
-        </ul>
-      </nav>
+      <div class="logo" aria-hidden="false">
+        <img src="https://raw.githubusercontent.com/yadavaarnav19-sketch/Fashion-Box/refs/heads/main/logo.png" alt="Fashion Box logo">
+        <span>Fashion Box</span>
+      </div>
+
+      <div class="header-actions" aria-hidden="false">
+        <button id="menu-toggle" aria-label="Toggle navigation">☰</button>
+        <nav aria-label="Primary navigation">
+          <ul>
+            <li><a href="#" data-tab="home" class="active">Home</a></li>
+            <li><a href="#" data-tab="collections">Collections</a></li>
+            <li><a href="#" data-tab="lookbook">Lookbook</a></li>
+            <li><a href="#" data-tab="about">About</a></li>
+            <li><a href="#" data-tab="contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </header>
 
   <!-- HOME TAB -->
   <section id="home" class="tab-content">
     <section class="hero">
-      <div class="container hero-text">
-        <h1>Elegance in Every Stitch</h1>
-        <p>Discover the latest trends in fashion with our curated pink collection.</p>
-        <a href="#" class="btn" data-tab="collections">Shop Now</a>
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <h1>Elegance in Every Stitch — Curated in Soft Pink</h1>
+          <p>Discover limited-edition pieces, seasonal drops, and editorial looks crafted for effortless femininity. Free shipping on selected orders.</p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <a href="#" class="btn" data-tab="collections">Shop Now</a>
+            <a href="#" class="btn" data-tab="lookbook" style="background:#fff; color:var(--pink); border:2px solid var(--pink);">See Lookbook</a>
+          </div>
+        </div>
+        <div class="hero-gallery" aria-hidden="false">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1520975911278-0c8e9e33c9b5?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=6230" alt="Closeup fabric details">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1520975879818-103b433b8aab?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=29a2" alt="Model in blush gown">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1542060748-4a1e3b8b4f12?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=6d8c" alt="Studio look">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=27f5" alt="Accessories flatlay">
+        </div>
       </div>
     </section>
 
-    <section class="products">
+    <section class="products" aria-labelledby="featured-heading">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Featured Styles</h2>
+          <h2 id="featured-heading" class="section-title">Featured Styles</h2>
+          <p class="section-desc">Handpicked favorites and new arrivals — click any product for a quick view and details.</p>
         </div>
-        <div class="product-grid">
-          <div class="product-card" data-name="Rose Lehnga" data-price="₹3,499" data-img="https://cdn.exoticindia.com/images/products/original/textiles-2019/taa777.jpg">
-            <img src="https://cdn.exoticindia.com/images/products/original/textiles-2019/taa777.jpg" alt="Rose Lehnga in pink embroidery">
+
+        <div class="product-grid" role="list">
+          <!-- 9 product cards -->
+          <div class="product-card" data-name="Rose Lehnga" data-price="₹3,499" data-img="https://cdn.exoticindia.com/images/products/original/textiles-2019/taa777.jpg" role="listitem" tabindex="0">
+            <img loading="lazy" src="https://cdn.exoticindia.com/images/products/original/textiles-2019/taa777.jpg" alt="Rose Lehnga in pink embroidery">
             <div class="card-body">
-              <h3>Rose Lehnga</h3>
-              <p>COMING SOON</p>
+              <div>
+                <h3>Rose Lehnga</h3>
+                <p class="muted">Traditional embroidery</p>
+              </div>
+              <div class="product-meta">
+                <span class="badge">COMING SOON</span>
+                <span>₹3,499</span>
+              </div>
             </div>
           </div>
-          <div class="product-card" data-name="Blush Gown" data-price="₹2,199" data-img="https://d2x02matzb08hy.cloudfront.net/img/clothing/hero_image/781222833/Untitled_design__19_.jpg">
-            <img src="https://d2x02matzb08hy.cloudfront.net/img/clothing/hero_image/781222833/Untitled_design__19_.jpg" alt="Blush Gown in pastel pink">
+
+          <div class="product-card" data-name="Blush Gown" data-price="₹2,199" data-img="https://d2x02matzb08hy.cloudfront.net/img/clothing/hero_image/781222833/Untitled_design__19_.jpg" tabindex="0">
+            <img loading="lazy" src="https://d2x02matzb08hy.cloudfront.net/img/clothing/hero_image/781222833/Untitled_design__19_.jpg" alt="Blush Gown in pastel pink">
             <div class="card-body">
-              <h3>Blush Gown</h3>
-              <p>COMING SOON</p>
+              <div>
+                <h3>Blush Gown</h3>
+                <p class="muted">Effortless silhouette</p>
+              </div>
+              <div class="product-meta">
+                <span class="badge">PRE-ORDER</span>
+                <span>₹2,199</span>
+              </div>
             </div>
           </div>
-          <div class="product-card" data-name="Petal Kurta" data-price="₹1,799" data-img="https://i.etsystatic.com/23742958/r/il/763f8a/5711136797/il_794xN.5711136797_s8sj.jpg">
-            <img src="https://i.etsystatic.com/23742958/r/il/763f8a/5711136797/il_794xN.5711136797_s8sj.jpg" alt="Petal Kurta in floral print">
+
+          <div class="product-card" data-name="Petal Kurta" data-price="₹1,799" data-img="https://i.etsystatic.com/23742958/r/il/763f8a/5711136797/il_794xN.5711136797_s8sj.jpg" tabindex="0">
+            <img loading="lazy" src="https://i.etsystatic.com/23742958/r/il/763f8a/5711136797/il_794xN.5711136797_s8sj.jpg" alt="Petal Kurta in floral print">
             <div class="card-body">
-              <h3>Petal Kurta</h3>
-              <p>COMING SOON</p>
+              <div>
+                <h3>Petal Kurta</h3>
+                <p class="muted">Floral daywear</p>
+              </div>
+              <div class="product-meta">
+                <span>₹1,799</span>
+                <span class="badge" style="background:#6c757d;">Limited</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" data-name="Silk Saree" data-price="₹4,299" data-img="https://media.urbanwomania.com/wp-content/uploads/2023/05/Blush-Pink-Banarasi-Saree.webp" tabindex="0">
+            <img loading="lazy" src="https://media.urbanwomania.com/wp-content/uploads/2023/05/Blush-Pink-Banarasi-Saree.webp" alt="Silk Saree blush tone">
+            <div class="card-body">
+              <div>
+                <h3>Silk Saree</h3>
+                <p class="muted">Banarasi weave</p>
+              </div>
+              <div class="product-meta">
+                <span>₹4,299</span>
+                <span class="badge">NEW</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" data-name="Pastel Anarkali" data-price="₹3,199" data-img="https://tse1.explicit.bing.net/th/id/OIP.e8d-OcLo8NpUk1kKh0TOsAHaLH?rs=1&pid=ImgDetMain&o=7&rm=3" tabindex="0">
+            <img loading="lazy" src="https://tse1.explicit.bing.net/th/id/OIP.e8d-OcLo8NpUk1kKh0TOsAHaLH?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Pastel Anarkali dress">
+            <div class="card-body">
+              <div>
+                <h3>Pastel Anarkali</h3>
+                <p class="muted">Regal flare</p>
+              </div>
+              <div class="product-meta">
+                <span>₹3,199</span>
+                <span class="badge">TRENDING</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" data-name="Petite Blazer" data-price="₹1,999" data-img="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=27f5" tabindex="0">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=27f5" alt="Tailored blazer in dusty pink">
+            <div class="card-body">
+              <div>
+                <h3>Petite Blazer</h3>
+                <p class="muted">Structured and chic</p>
+              </div>
+              <div class="product-meta">
+                <span>₹1,999</span>
+                <span class="badge">BESTSELLER</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" data-name="Silk Scarf" data-price="₹599" data-img="https://images.unsplash.com/photo-1532339142463-fd3e3b8cc97f?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=3a4c" tabindex="0">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1532339142463-fd3e3b8cc97f?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=3a4c" alt="Silk scarf closeup">
+            <div class="card-body">
+              <div>
+                <h3>Silk Scarf</h3>
+                <p class="muted">Hand-rolled edges</p>
+              </div>
+              <div class="product-meta">
+                <span>₹599</span>
+                <span class="badge">ACCESSORY</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" data-name="Rose Petal Clutch" data-price="₹1,299" data-img="https://images.unsplash.com/photo-1533670807540-76d931a4a4a2?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=bb0a" tabindex="0">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1533670807540-76d931a4a4a2?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=bb0a" alt="Rose petal clutch bag">
+            <div class="card-body">
+              <div>
+                <h3>Rose Petal Clutch</h3>
+                <p class="muted">Evening essential</p>
+              </div>
+              <div class="product-meta">
+                <span>₹1,299</span>
+                <span class="badge">LIMITED</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card" data-name="Lace Slip Dress" data-price="₹2,399" data-img="https://images.unsplash.com/photo-1495121605193-b116b5b09e0b?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=d1cb" tabindex="0">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1495121605193-b116b5b09e0b?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=d1cb" alt="Lace slip dress blush">
+            <div class="card-body">
+              <div>
+                <h3>Lace Slip Dress</h3>
+                <p class="muted">Romantic evenings</p>
+              </div>
+              <div class="product-meta">
+                <span>₹2,399</span>
+                <span class="badge">NEW</span>
+              </div>
             </div>
           </div>
         </div>
@@ -320,128 +486,186 @@
     </section>
   </section>
 
-<!-- COLLECTIONS TAB -->
-<section id="collections" class="tab-content hidden">
-  <section class="themed">
-    <div class="container fade-section">
-      <div class="section-header">
-        <h2 class="section-title">Our Collections</h2>
-        <p class="section-desc">Explore seasonal drops and timeless staples in soft pinks and elegant silhouettes.</p>
-      </div>
+  <!-- COLLECTIONS TAB -->
+  <section id="collections" class="tab-content hidden">
+    <section class="themed">
+      <div class="container fade-section">
+        <div class="section-header">
+          <h2 class="section-title">Our Collections</h2>
+          <p class="section-desc">Explore seasonal drops and timeless staples in soft pinks and elegant silhouettes.</p>
+        </div>
 
-      <div class="product-grid">
-        <div class="product-card animate-card" data-name="Silk Saree" data-price="₹4,299" data-img="https://via.placeholder.com/600x400?text=Silk+Saree">
-          <img src="https://media.urbanwomania.com/wp-content/uploads/2023/05/Blush-Pink-Banarasi-Saree.webp" alt="Silk Saree blush tone">
-          <div class="card-body">
-            <h3>Silk Saree</h3>
-            <p>COMING SOON</p>
+        <div class="product-grid">
+          <div class="product-card animate-card" data-name="Silk Saree" data-price="₹4,299" data-img="https://media.urbanwomania.com/wp-content/uploads/2023/05/Blush-Pink-Banarasi-Saree.webp">
+            <img loading="lazy" src="https://media.urbanwomania.com/wp-content/uploads/2023/05/Blush-Pink-Banarasi-Saree.webp" alt="Silk Saree blush tone">
+            <div class="card-body">
+              <h3>Silk Saree</h3>
+              <p>Premium weave, artisan finish</p>
+              <div class="product-meta"><span>₹4,299</span><span class="badge">HANDCRAFTED</span></div>
+            </div>
+          </div>
+
+          <div class="product-card animate-card" data-name="Pastel Anarkali" data-price="₹3,199" data-img="https://tse1.explicit.bing.net/th/id/OIP.e8d-OcLo8NpUk1kKh0TOsAHaLH?rs=1&pid=ImgDetMain&o=7&rm=3">
+            <img loading="lazy" src="https://tse1.explicit.bing.net/th/id/OIP.e8d-OcLo8NpUk1kKh0TOsAHaLH?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Pastel Anarkali dress">
+            <div class="card-body">
+              <h3>Pastel Anarkali</h3>
+              <p>Flowing silhouette for celebrations</p>
+              <div class="product-meta"><span>₹3,199</span><span class="badge">LIMITED</span></div>
+            </div>
+          </div>
+
+          <div class="product-card animate-card" data-name="Bridal Edit" data-price="Contact" data-img="https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=6b6d">
+            <img loading="lazy" src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=6b6d" alt="Bridal silhouette">
+            <div class="card-body">
+              <h3>Bridal Edit</h3>
+              <p>Made-to-order ensembles</p>
+              <div class="product-meta"><span>Contact</span><span class="badge">BESPOKE</span></div>
+            </div>
           </div>
         </div>
-        <div class="product-card animate-card" data-name="Pastel Anarkali" data-price="₹3,199" data-img="https://via.placeholder.com/600x400?text=Pastel+Anarkali">
-          <img src="https://tse1.explicit.bing.net/th/id/OIP.e8d-OcLo8NpUk1kKh0TOsAHaLH?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Pastel Anarkali dress">
-          <div class="card-body">
-            <h3>Pastel Anarkali</h3>
-            <p>COMING SOON</p>
+      </div>
+    </section>
+  </section>
+
+  <!-- LOOKBOOK TAB -->
+  <section id="lookbook" class="tab-content hidden">
+    <section class="themed">
+      <div class="container fade-section">
+        <div class="section-header">
+          <h2 class="section-title">Lookbook</h2>
+          <p class="section-desc">Get inspired by curated outfits and editorial looks. Click any image to open a large preview.</p>
+        </div>
+
+        <div class="gallery-grid">
+          <img class="animate-img" loading="lazy" src="https://th.bing.com/th/id/OIP.SYVjJGXAqIXiE3aZE1tWKwHaJu?w=202&h=265&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Editorial Look 1">
+          <img class="animate-img" loading="lazy" src="https://cdn.shopify.com/s/files/1/0273/0347/7337/products/DSC7632_2_8428eebe-5656-4d45-9703-4cca8fa8b160.jpg?v=1639032466" alt="Editorial Look 2">
+          <img class="animate-img" loading="lazy" src="https://i.pinimg.com/originals/ca/38/f4/ca38f491c0ee04391a13ab85fd281453.jpg" alt="Editorial Look 3">
+          <img class="animate-img" loading="lazy" src="https://images.unsplash.com/photo-1540574163026-643ea20ade25?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&s=2f4b" alt="Editorial Look 4">
+          <img class="animate-img" loading="lazy" src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&s=5f8f" alt="Editorial Look 5">
+          <img class="animate-img" loading="lazy" src="https://images.unsplash.com/photo-1520975911278-0c8e9e33c9b5?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&s=6230" alt="Editorial Look 6">
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ABOUT TAB -->
+  <section id="about" class="tab-content hidden">
+    <section class="themed">
+      <div class="container fade-section">
+        <div class="section-header">
+          <h2 class="section-title">About Fashion Box</h2>
+          <p class="section-desc">We are a small atelier dedicated to sustainable fabrics, hand-finished details, and pieces that celebrate femininity. Our design process blends traditional techniques with contemporary silhouettes.</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:center;">
+          <div>
+            <h3 style="color:var(--pink); margin-bottom:8px;">Our Craft</h3>
+            <p>Each item is prototyped with care and inspected by artisans to ensure the highest standards. We partner with small mills and support slow fashion practices — fewer volumes, better quality.</p>
+            <ul style="margin-top:12px; color:#555;">
+              <li>Artisan handwork</li>
+              <li>Sustainably sourced fabrics</li>
+              <li>Made-to-order options</li>
+            </ul>
+            <div style="margin-top:14px;">
+              <a href="#" class="btn" id="open-size-guide">Size Guide</a>
+              <a href="#" class="btn" data-tab="contact" style="background:#fff; color:var(--pink); border:2px solid var(--pink);">Custom Orders</a>
+            </div>
+          </div>
+          <div>
+            <img loading="lazy" src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&s=a3b8" alt="Atelier workspace" style="width:100%; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.06);">
           </div>
         </div>
-        <!-- Add more cards as needed -->
       </div>
-    </div>
+    </section>
   </section>
-</section>
 
-<!-- LOOKBOOK TAB -->
-<section id="lookbook" class="tab-content hidden">
-  <section class="themed">
-    <div class="container fade-section">
-      <div class="section-header">
-        <h2 class="section-title">Lookbook</h2>
-        <p class="section-desc">Get inspired by curated outfits and editorial looks.</p>
-      </div>
+  <!-- CONTACT TAB -->
+  <section id="contact" class="tab-content hidden">
+    <section class="themed">
+      <div class="container fade-section">
+        <div class="section-header">
+          <h2 class="section-title">Contact Us</h2>
+          <p class="section-desc">Questions, bespoke requests, or collaborations — we’d love to hear from you.</p>
+        </div>
 
-      <div class="gallery-grid">
-        <img class="animate-img" src="https://th.bing.com/th/id/OIP.SYVjJGXAqIXiE3aZE1tWKwHaJu?w=202&h=265&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" alt="Editorial Look 1">
-        <img class="animate-img" src="https://cdn.shopify.com/s/files/1/0273/0347/7337/products/DSC7632_2_8428eebe-5656-4d45-9703-4cca8fa8b160.jpg?v=1639032466" alt="Editorial Look 2">
-        <img class="animate-img" src="https://i.pinimg.com/originals/ca/38/f4/ca38f491c0ee04391a13ab85fd281453.jpg" alt="Editorial Look 3">
+        <form id="contactForm" class="contact-form" action="http://localhost:5000/contact" method="POST">
+          <div class="form-row animate-form">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" placeholder="Your name" required>
+          </div>
+          <div class="form-row animate-form">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required>
+          </div>
+          <div class="form-row animate-form">
+            <label for="subject">Subject</label>
+            <input id="subject" name="subject" type="text" placeholder="Brief subject" required>
+          </div>
+          <div class="form-row animate-form">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" placeholder="Tell us about your request" required></textarea>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button type="submit" class="btn">Send</button>
+            <a href="mailto:hello@fashionbox.example" class="icon-btn" style="text-decoration:none;">📧 hello@fashionbox.example</a>
+          </div>
+        </form>
       </div>
-    </div>
+    </section>
   </section>
-</section>
 
-<!-- CONTACT TAB -->
-<section id="contact" class="tab-content hidden">
-  <section class="themed">
-    <div class="container fade-section">
+  <!-- Newsletter -->
+  <section class="themed" aria-label="Newsletter signup">
+    <div class="container">
       <div class="section-header">
-        <h2 class="section-title">Contact Us</h2>
-        <p class="section-desc">Questions or custom orders? We’d love to hear from you.</p>
+        <h2 class="section-title">Stay in the Loop</h2>
+        <p class="section-desc">Sign up for exclusive drops and lookbook releases. We send a few curated messages a month.</p>
       </div>
 
-      <form id="contactForm" class="contact-form" action="http://localhost:5000/contact" method="POST">
-        <div class="form-row animate-form">
-          <label for="name">Name</label>
-          <input id="name" name="name" type="text" placeholder="Your name" required>
-        </div>
-        <div class="form-row animate-form">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" placeholder="you@example.com" required>
-        </div>
-        <div class="form-row animate-form">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="4" placeholder="Tell us about your request" required></textarea>
-        </div>
-        <button type="submit" class="btn">Send</button>
+      <form id="newsletter" style="display:flex; gap:8px; justify-content:center; margin-top:18px; flex-wrap:wrap;">
+        <input aria-label="Email address" type="email" placeholder="you@example.com" required style="padding:12px 14px; border-radius:10px; border:1px solid #ddd; max-width:360px;">
+        <button class="btn" type="submit">Subscribe</button>
       </form>
     </div>
   </section>
-</section>
 
-<!-- ANIMATION STYLES -->
-<style>
-  .fade-section {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 1s ease;
-  }
-  .fade-section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .animate-card, .animate-img, .animate-form {
-    opacity: 0;
-    transform: scale(0.95);
-    transition: all 0.8s ease;
-  }
-  .animate-card.visible, .animate-img.visible, .animate-form.visible {
-    opacity: 1;
-    transform: scale(1);
-  }
-</style>
-
-<!-- ANIMATION SCRIPT -->
-<script>
-  // Intersection Observer for fade-in animations
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
-    });
-  }, { threshold: 0.2 });
-
-  document.querySelectorAll(".fade-section, .animate-card, .animate-img, .animate-form")
-    .forEach(el => observer.observe(el));
-</script>
+  <!-- Size Guide Modal (hidden by default) -->
+  <div id="sizeModal" class="modal hidden size-modal" role="dialog" aria-modal="true" aria-labelledby="size-title">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close">✕</button>
+      <div>
+        <h3 id="size-title" style="color:var(--pink);">Size Guide</h3>
+        <p>Use these measurements to choose the right fit. For bespoke sizing, contact us.</p>
+        <table class="size-table" aria-hidden="false">
+          <thead>
+            <tr><th>Size</th><th>Bust (cm)</th><th>Waist (cm)</th><th>Hips (cm)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>S</td><td>84-88</td><td>66-70</td><td>90-94</td></tr>
+            <tr><td>M</td><td>89-93</td><td>71-75</td><td>95-99</td></tr>
+            <tr><td>L</td><td>94-98</td><td>76-80</td><td>100-104</td></tr>
+            <tr><td>XL</td><td>99-104</td><td>81-88</td><td>105-110</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-backdrop"></div>
+  </div>
 
   <!-- Product quick-view modal -->
   <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-content">
       <button class="modal-close" aria-label="Close">✕</button>
       <img id="modal-img" src="" alt="">
-      <h3 id="modal-title" class="modal-title"></h3>
-      <p id="modal-price" class="modal-price"></p>
-      <a href="#" class="btn">Add to cart</a>
+      <div class="modal-info">
+        <h3 id="modal-title" class="modal-title"></h3>
+        <p id="modal-price" class="modal-price"></p>
+        <p id="modal-desc" style="color:#444; margin-bottom:12px;"></p>
+        <div style="display:flex; gap:8px;">
+          <a id="addToCart" href="#" class="btn" role="button">Add to cart</a>
+          <a id="viewDetails" href="#" class="btn" style="background:#fff; color:var(--pink); border:2px solid var(--pink);">View details</a>
+        </div>
+      </div>
     </div>
     <div class="modal-backdrop"></div>
   </div>
@@ -449,9 +673,54 @@
   <!-- Footer -->
   <footer>
     <div class="container">
-      <p>&copy; 2025 Fashion Box. All rights reserved.</p>
+      <div class="footer-grid">
+        <div>&copy; 2025 Fashion Box. All rights reserved.</div>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <a href="#" style="color:var(--pink); text-decoration:none;">Instagram</a>
+          <a href="#" style="color:var(--pink); text-decoration:none;">Pinterest</a>
+          <a href="#" style="color:var(--pink); text-decoration:none;">Contact</a>
+        </div>
+      </div>
     </div>
   </footer>
+
+  <!-- ANIMATION STYLES -->
+  <style>
+    .fade-section {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s ease;
+    }
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .animate-card, .animate-img, .animate-form {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.8s ease;
+    }
+    .animate-card.visible, .animate-img.visible, .animate-form.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+  </style>
+
+  <!-- ANIMATION SCRIPT -->
+  <script>
+    // Intersection Observer for fade-in animations
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    }, { threshold: 0.18 });
+
+    document.querySelectorAll(".fade-section, .animate-card, .animate-img, .animate-form")
+      .forEach(el => observer.observe(el));
+  </script>
 
   <!-- JavaScript (tabs, smooth scroll, modal, menu, form) -->
   <script>
@@ -465,7 +734,9 @@
       // Tab switching
       function showTab(id) {
         sections.forEach(s => s.classList.add("hidden"));
-        document.getElementById(id).classList.remove("hidden");
+        const target = document.getElementById(id);
+        if (!target) return;
+        target.classList.remove("hidden");
 
         // Update active link
         document.querySelectorAll("nav a").forEach(a => {
@@ -476,10 +747,13 @@
         navList.classList.remove("show");
 
         // Smooth scroll to top of tab
-        document.getElementById(id).scrollIntoView({ behavior: "smooth", block: "start" });
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
 
-        // Update URL hash (optional, helps reload to same tab)
+        // Update URL hash
         history.replaceState(null, "", "#" + id);
+
+        // Re-run simple entrance animations for the tab
+        animateTab(id);
       }
 
       // Initialize from hash if present
@@ -505,78 +779,109 @@
         navList.classList.toggle("show");
       });
 
-      // Modal setup
+      // Modal setup (product quick-view)
       const modal = document.getElementById("modal");
       const modalImg = document.getElementById("modal-img");
       const modalTitle = document.getElementById("modal-title");
       const modalPrice = document.getElementById("modal-price");
-      const modalClose = document.querySelector(".modal-close");
-      const backdrop = document.querySelector(".modal-backdrop");
+      const modalDesc = document.getElementById("modal-desc");
+      const modalCloseBtns = document.querySelectorAll(".modal-close");
+      const backdrop = document.querySelectorAll(".modal-backdrop");
 
-      function openModal({ img, name, price }) {
+      function openModal({ img, name, price, desc, detailsLink }) {
         modalImg.src = img;
         modalImg.alt = name;
         modalTitle.textContent = name;
         modalPrice.textContent = price;
+        modalDesc.textContent = desc || "Beautifully crafted — available in limited quantities.";
+        document.getElementById("addToCart").href = "#";
+        document.getElementById("viewDetails").href = detailsLink || "#";
         modal.classList.remove("hidden");
         document.body.style.overflow = "hidden";
       }
-      function closeModal() {
+      function closeModal(el) {
         modal.classList.add("hidden");
         document.body.style.overflow = "";
       }
 
       document.querySelectorAll(".product-card").forEach(card => {
+        // click and keyboard accessible
         card.addEventListener("click", () => {
           openModal({
             img: card.dataset.img || card.querySelector("img").src,
             name: card.dataset.name || card.querySelector("h3").textContent,
-            price: card.dataset.price || card.querySelector("p").textContent
+            price: card.dataset.price || card.querySelector(".product-meta span:last-child")?.textContent || "",
+            desc: card.querySelector("p")?.textContent || "",
+            detailsLink: "#"
           });
         });
+        card.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            card.click();
+          }
+        });
       });
-      modalClose.addEventListener("click", closeModal);
-      backdrop.addEventListener("click", closeModal);
+
+      modalCloseBtns.forEach(btn => btn.addEventListener("click", closeModal));
+      backdrop.forEach(b => b.addEventListener("click", closeModal));
       document.addEventListener("keydown", e => {
-        if (e.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
+        if (e.key === "Escape") {
+          if (!modal.classList.contains("hidden")) closeModal();
+          if (!document.getElementById("sizeModal").classList.contains("hidden")) {
+            document.getElementById("sizeModal").classList.add("hidden");
+            document.body.style.overflow = "";
+          }
+        }
       });
 
       // Contact form demo submit
       const form = document.getElementById("contactForm");
-      form.addEventListener("submit", e => {
-        e.preventDefault();
-        alert("Thanks! We’ll get back to you soon.");
-        form.reset();
+      if (form) {
+        form.addEventListener("submit", e => {
+          e.preventDefault();
+          alert("Thanks! We’ll get back to you soon.");
+          form.reset();
+        });
+      }
+
+      // Newsletter demo submit
+      const newsletter = document.getElementById("newsletter");
+      if (newsletter) {
+        newsletter.addEventListener("submit", e => {
+          e.preventDefault();
+          alert("Subscribed — check your inbox for a welcome note.");
+          newsletter.reset();
+        });
+      }
+
+      // Size guide modal
+      const sizeModal = document.getElementById("sizeModal");
+      document.getElementById("open-size-guide")?.addEventListener("click", (e) => {
+        e?.preventDefault();
+        sizeModal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
       });
+
+      // Accessibility: focus management could be improved (trap focus) for real production.
+
     });
+
+    // Function to trigger animations when a tab is shown
+    function animateTab(tabId) {
+      const tab = document.getElementById(tabId);
+      if (!tab) return;
+
+      // Find all animatable elements inside the tab
+      const animatables = tab.querySelectorAll(".fade-section, .animate-card, .animate-img, .animate-form");
+
+      // Reset and re-trigger animation
+      animatables.forEach(el => {
+        el.classList.remove("visible"); // reset
+        void el.offsetWidth;            // force reflow (important!)
+        el.classList.add("visible");    // trigger again
+      });
+    }
   </script>
-
-  <script>
-  // Function to trigger animations when a tab is shown
-  function animateTab(tabId) {
-    const tab = document.getElementById(tabId);
-    if (!tab) return;
-
-    // Find all animatable elements inside the tab
-    const animatables = tab.querySelectorAll(".fade-section, .animate-card, .animate-img, .animate-form");
-
-    // Reset and re-trigger animation
-    animatables.forEach(el => {
-      el.classList.remove("visible"); // reset
-      void el.offsetWidth;            // force reflow (important!)
-      el.classList.add("visible");    // trigger again
-    });
-  }
-    
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
