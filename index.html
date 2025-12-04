@@ -396,23 +396,6 @@
   </section>
 </section>
 
-  <script>
-  // Function to trigger animations when a tab is shown
-  function animateTab(tabId) {
-    const tab = document.getElementById(tabId);
-    if (!tab) return;
-
-    // Find all animatable elements inside the tab
-    const animatables = tab.querySelectorAll(".fade-section, .animate-card, .animate-img, .animate-form");
-
-    // Reset and re-trigger animation
-    animatables.forEach(el => {
-      el.classList.remove("visible"); // reset
-      void el.offsetWidth;            // force reflow (important!)
-      el.classList.add("visible");    // trigger again
-    });
-  }
-
   // Example tab switching logic
   const tabs = document.querySelectorAll(".tab-content");
   const navLinks = document.querySelectorAll(".nav-link"); // adjust selector to your tab buttons
@@ -594,9 +577,28 @@
       });
     });
   </script>
+
+  <script>
+  // Function to trigger animations when a tab is shown
+  function animateTab(tabId) {
+    const tab = document.getElementById(tabId);
+    if (!tab) return;
+
+    // Find all animatable elements inside the tab
+    const animatables = tab.querySelectorAll(".fade-section, .animate-card, .animate-img, .animate-form");
+
+    // Reset and re-trigger animation
+    animatables.forEach(el => {
+      el.classList.remove("visible"); // reset
+      void el.offsetWidth;            // force reflow (important!)
+      el.classList.add("visible");    // trigger again
+    });
+  }
+    
 </body>
 
 </html>
+
 
 
 
