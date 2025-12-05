@@ -187,6 +187,9 @@
       object-fit:cover;
     }
 
+    .hidden {
+      display: none;
+    }
     /* Contact form */
     .contact-form {
       max-width: 720px;
@@ -977,6 +980,28 @@
         });
       }
 
+      <script>
+      // Get modal and close button
+      const sizeModal = document.getElementById('sizeModal');
+      const closeBtn = sizeModal.querySelector('.modal-close');
+      const backdrop = sizeModal.querySelector('.modal-backdrop');
+    
+      // Close modal when ✕ button is clicked
+      closeBtn.addEventListener('click', () => {
+        sizeModal.classList.add('hidden');
+      });
+    
+      // Also close when backdrop is clicked
+      backdrop.addEventListener('click', () => {
+        sizeModal.classList.add('hidden');
+      });
+    
+      // Example: function to open modal (you can call this from a button)
+      function openSizeModal() {
+        sizeModal.classList.remove('hidden');
+      }
+    </script>
+
       // Newsletter demo submit
       const newsletter = document.getElementById("newsletter");
       if (newsletter) {
@@ -1017,6 +1042,7 @@
   </script>
 </body>
 </html>
+
 
 
 
