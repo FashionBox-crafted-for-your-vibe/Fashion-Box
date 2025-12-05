@@ -1001,47 +1001,11 @@
         sizeModal.classList.remove('hidden');
       }
     </script>
-
-      // Newsletter demo submit
-      const newsletter = document.getElementById("newsletter");
-      if (newsletter) {
-        newsletter.addEventListener("submit", e => {
-          e.preventDefault();
-          alert("Subscribed — check your inbox for a welcome note.");
-          newsletter.reset();
-        });
-      }
-
-      // Size guide modal
-      const sizeModal = document.getElementById("sizeModal");
-      document.getElementById("open-size-guide")?.addEventListener("click", (e) => {
-        e?.preventDefault();
-        sizeModal.classList.remove("hidden");
-        document.body.style.overflow = "hidden";
-      });
-
-      // Accessibility: focus management could be improved (trap focus) for real production.
-
-    });
-
-    // Function to trigger animations when a tab is shown
-    function animateTab(tabId) {
-      const tab = document.getElementById(tabId);
-      if (!tab) return;
-
-      // Find all animatable elements inside the tab
-      const animatables = tab.querySelectorAll(".fade-section, .animate-card, .animate-img, .animate-form");
-
-      // Reset and re-trigger animation
-      animatables.forEach(el => {
-        el.classList.remove("visible"); // reset
-        void el.offsetWidth;            // force reflow (important!)
-        el.classList.add("visible");    // trigger again
-      });
-    }
+  
   </script>
 </body>
 </html>
+
 
 
 
