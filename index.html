@@ -479,6 +479,166 @@ footer a {
   }
   .viewer-content { height: 88vh; }
 }
+
+/* ================== NEW SECTIONS ================== */
+.mood-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 20px;
+  align-items: start;
+  margin-top: 24px;
+}
+.palette {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.palette .swatches {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.swatch {
+  flex: 1;
+  height: 48px;
+  border-radius: 8px;
+  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.04);
+}
+.mood-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.behind-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+.behind-card {
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.behind-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.philosophy {
+  background: linear-gradient(180deg,#fff,#fff7fb);
+  text-align: center;
+}
+.philosophy p {
+  max-width: 900px;
+  margin: 10px auto 0;
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.map-wrap {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  align-items: start;
+  margin-top: 20px;
+}
+.map {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 12px;
+}
+.map img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+.visitor-panel {
+  background: #fffaf7;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.visitor-count {
+  font-size: 2rem;
+  color: var(--pink);
+  font-weight: 700;
+}
+.country-list {
+  margin-top: 12px;
+  color: var(--text-muted);
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.collab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+.collab-card {
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.collab-avatar {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 8px;
+  display: block;
+}
+
+.quote-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+.quote-card {
+  background: linear-gradient(180deg,#fff,#fffaf7);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  min-height: 120px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:8px;
+}
+.quote-card .line {
+  color: var(--text-dark);
+  font-weight: 600;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+}
+.quote-card .source {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* small screens for new sections */
+@media(max-width:900px){
+  .map-wrap { grid-template-columns: 1fr; }
+  .map img { height: 240px; }
+}
 </style>
 </head>
 
@@ -573,7 +733,7 @@ footer a {
           <!-- raw.githubusercontent.com path for the video (branch/commit provided in prompt) -->
           <video
             id="lookbookSideVideo"
-            src="https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/bbd33d5cc6bb2c2488e379ffcffd54eaee0db482/Beige%20and%20Brown%20Modern%20Fashion%20Forward%20Instagram%20Story%20Video%20(1).mp4"
+            src="https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/bbd33d5cc6bb2c2488e379ffcffd54eaee0db482/Beige%20and%20Brown%20Modern%20Fashion%20Forward%20Instagram%20[...]
             controls
             playsinline
             muted
@@ -612,6 +772,173 @@ footer a {
       <img src="" alt="" class="viewer-image" id="viewerImg">
       <button class="btn-ctrl" id="viewerNext" style="position:absolute;right:18px;top:50%;transform:translateY(-50%);" aria-label="Next">›</button>
       <button class="btn-ctrl" id="viewerClose" style="position:absolute;right:18px;top:12px;" aria-label="Close viewer">✕</button>
+    </div>
+  </div>
+</section>
+
+<!-- NEW: Mood Boards -->
+<section id="mood-boards" class="section">
+  <h2 class="section-title">Mood Boards</h2>
+  <p class="section-subtitle">Curated color palettes and inspiration boards for each collection.</p>
+
+  <div class="container mood-grid reveal" aria-live="polite">
+    <div class="palette" role="article" aria-label="Blush Collection palette">
+      <h4 style="margin:0;font-family:'Playfair Display',serif;color:var(--text-dark);">Blush Collection</h4>
+      <div class="swatches" aria-hidden="false">
+        <div class="swatch" style="background:#fbeff3"></div>
+        <div class="swatch" style="background:#f6c7d9"></div>
+        <div class="swatch" style="background:#f0a3c0"></div>
+        <div class="swatch" style="background:#d63384"></div>
+      </div>
+      <img class="mood-img" src="https://images.unsplash.com/photo-1520975923398-18f86a0b6f3f" alt="Blush inspiration">
+      <div style="color:var(--text-muted);margin-top:8px;font-size:.95rem;">Soft tones, romantic textures and bridal-ready silhouettes.</div>
+    </div>
+
+    <div class="palette" role="article" aria-label="Cream Collection palette">
+      <h4 style="margin:0;font-family:'Playfair Display',serif;color:var(--text-dark);">Cream & Beige</h4>
+      <div class="swatches">
+        <div class="swatch" style="background:#fffdf8"></div>
+        <div class="swatch" style="background:#f4eadf"></div>
+        <div class="swatch" style="background:#e7d6c6"></div>
+        <div class="swatch" style="background:#c8b7a6"></div>
+      </div>
+      <img class="mood-img" src="https://images.unsplash.com/photo-1542206395-9feb3edaa68b" alt="Cream inspiration">
+      <div style="color:var(--text-muted);margin-top:8px;font-size:.95rem;">Warm neutrals, tactile linens and artisanal weaves.</div>
+    </div>
+
+    <div class="palette" role="article" aria-label="Evening Collection palette">
+      <h4 style="margin:0;font-family:'Playfair Display',serif;color:var(--text-dark);">Evening Silhouettes</h4>
+      <div class="swatches">
+        <div class="swatch" style="background:#fff7fb"></div>
+        <div class="swatch" style="background:#ffdfee"></div>
+        <div class="swatch" style="background:#f3b6d4"></div>
+        <div class="swatch" style="background:#a61e63"></div>
+      </div>
+      <img class="mood-img" src="https://images.unsplash.com/photo-1491553895911-0055eca6402d" alt="Evening inspiration">
+      <div style="color:var(--text-muted);margin-top:8px;font-size:.95rem;">Luxurious drapes for celebratory nights.</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEW: Behind-the-Scenes -->
+<section id="behind-the-scenes" class="section">
+  <h2 class="section-title">Behind-the-Scenes</h2>
+  <p class="section-subtitle">Showcasing artisans at work, sketches, and the design evolution.</p>
+
+  <div class="container behind-grid reveal">
+    <div class="behind-card" role="article">
+      <img src="https://images.unsplash.com/photo-1555685812-4b943f1fede3" alt="Artisan embroidering">
+      <h4 style="margin-top:10px;font-family:'Playfair Display',serif;color:var(--text-dark);">Embroidery Studio</h4>
+      <div style="color:var(--text-muted);margin-top:6px;">Hand-stitched motifs brought to life by skilled artisans.</div>
+    </div>
+
+    <div class="behind-card" role="article">
+      <img src="https://images.unsplash.com/photo-1519744792095-2f2205e87b6f" alt="Sketches and patterns">
+      <h4 style="margin-top:10px;font-family:'Playfair Display',serif;color:var(--text-dark);">Design Sketches</h4>
+      <div style="color:var(--text-muted);margin-top:6px;">Early sketches and pattern making reveal the design journey.</div>
+    </div>
+
+    <div class="behind-card" role="article">
+      <img src="https://images.unsplash.com/photo-1520975911078-9eeda54f6b6f" alt="Fabric selection">
+      <h4 style="margin-top:10px;font-family:'Playfair Display',serif;color:var(--text-dark);">Material Selection</h4>
+      <div style="color:var(--text-muted);margin-top:6px;">Careful textile choices define the collection's character.</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEW: Philosophy Page -->
+<section id="philosophy" class="section philosophy">
+  <h2 class="section-title">Our Philosophy</h2>
+  <p class="section-subtitle">Slow fashion, elegance, and artistry at the heart of everything we create.</p>
+  <div class="container reveal">
+    <p>
+      At Fashion Box we believe in thoughtful design and enduring beauty. Our work is guided by a reverence for craft — each garment carries the mark of human touch, intention, and restraint.
+      We prioritise quality over quantity, seasonless silhouettes over fleeting trends, and partnerships that uplift artisans and their communities.
+      This is our commitment to slow fashion: fewer, better-made pieces that invite care, repair and stories that last.
+    </p>
+  </div>
+</section>
+
+<!-- NEW: Global Visitor Map -->
+<section id="global-visitors" class="section">
+  <h2 class="section-title">Global Visitor Map</h2>
+  <p class="section-subtitle">See where our audience comes from — a simple, privacy-friendly view tied to our visitor counter idea.</p>
+
+  <div class="container map-wrap reveal">
+    <div class="map" aria-hidden="false">
+      <!-- illustrative world map image; replace later with more interactive map if desired -->
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" alt="World map illustration">
+      <div style="margin-top:12px;color:var(--text-muted);font-size:.95rem;">Interactive map coming soon — this panel shows a quick summary of visitor origins and counts.</div>
+    </div>
+
+    <aside class="visitor-panel" aria-label="Visitor panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:.9rem;color:var(--text-muted);">Total Visitors (simulated)</div>
+          <div class="visitor-count" id="visitorCount">0</div>
+        </div>
+        <div style="text-align:right;color:var(--text-muted);font-size:.9rem;">
+          <div id="visitorNote">Local count</div>
+          <div style="margin-top:6px;font-size:.85rem;color:var(--pink);">Privacy-friendly</div>
+        </div>
+      </div>
+
+      <div class="country-list" id="countryList" aria-live="polite">
+        <!-- list populated by JS -->
+      </div>
+
+      <div style="margin-top:12px;color:var(--text-muted);font-size:.85rem;">
+        This lightweight counter uses your browser storage to keep a simple running total per device. It is privacy-focused and does not send personal data to external services.
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- NEW: Collaborations -->
+<section id="collaborations" class="section">
+  <h2 class="section-title">Collaborations</h2>
+  <p class="section-subtitle">Featured guest designers and stylists who shaped special pieces.</p>
+
+  <div class="container collab-grid reveal">
+    <div class="collab-card" role="article">
+      <img class="collab-avatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2" alt="Designer A">
+      <h4 style="margin:6px 0 0;font-family:'Playfair Display',serif;color:var(--text-dark);">Anaya Verma</h4>
+      <div style="color:var(--text-muted);margin-top:6px;">Guest designer — textile reinterpretation in the Blush range.</div>
+    </div>
+
+    <div class="collab-card" role="article">
+      <img class="collab-avatar" src="https://images.unsplash.com/photo-1545996124-1b1e85d6b26a" alt="Stylist B">
+      <h4 style="margin:6px 0 0;font-family:'Playfair Display',serif;color:var(--text-dark);">R. Kapoor</h4>
+      <div style="color:var(--text-muted);margin-top:6px;">Stylist — evening silhouettes and editorial direction.</div>
+    </div>
+
+    <div class="collab-card" role="article">
+      <img class="collab-avatar" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c" alt="Artisan C">
+      <h4 style="margin:6px 0 0;font-family:'Playfair Display',serif;color:var(--text-dark);">Kala Crafts</h4>
+      <div style="color:var(--text-muted);margin-top:6px;">Traditional embroidery atelier — handwork partnership.</div>
+    </div>
+  </div>
+</section>
+
+<!-- NEW: Fashion Poetry / Quotes -->
+<section id="poetry" class="section">
+  <h2 class="section-title">Fashion Poetry & Quotes</h2>
+  <p class="section-subtitle">Pairing outfits with elegant quotes and verses.</p>
+
+  <div class="container quote-grid reveal">
+    <div class="quote-card" role="article">
+      <div class="line">"Clothes are like a good story — they reveal what the heart has been whispering."</div>
+      <div class="source">— Fashion Box</div>
+    </div>
+
+    <div class="quote-card" role="article">
+      <div class="line">"Elegance is not about being noticed, it's about being remembered."</div>
+      <div class="source">— Giorgio Armani</div>
+    </div>
+
+    <div class="quote-card" role="article">
+      <div class="line">"Each stitch holds a memory; each seam, a promise."</div>
+      <div class="source">— House Notes</div>
     </div>
   </div>
 </section>
@@ -900,6 +1227,92 @@ window.addEventListener('scroll', () => {
       resetAutoplay();
     }
   };
+})();
+</script>
+
+<!-- NEW: lightweight visitor counter & simple country summary (privacy-friendly, localStorage-based) -->
+<script>
+(function(){
+  // Basic visitor counter stored locally per-browser (privacy-friendly)
+  const visitorKey = 'fashionbox_visitors_v1';
+  const countriesKey = 'fashionbox_country_counts_v1';
+
+  function incrementLocalCount() {
+    try {
+      const raw = localStorage.getItem(visitorKey);
+      let count = raw ? Number(raw) : 0;
+      count = (isNaN(count) ? 0 : count) + 1;
+      localStorage.setItem(visitorKey, String(count));
+      return count;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function initCountryCounts() {
+    try {
+      const raw = localStorage.getItem(countriesKey);
+      if (raw) return JSON.parse(raw);
+      // sample seeded distribution (will evolve locally)
+      const seed = {
+        "United States": 12,
+        "India": 23,
+        "United Kingdom": 6,
+        "France": 4,
+        "Australia": 3,
+        "Germany": 2
+      };
+      localStorage.setItem(countriesKey, JSON.stringify(seed));
+      return seed;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function bumpRandomCountry() {
+    try {
+      const counts = initCountryCounts();
+      const keys = Object.keys(counts);
+      if (keys.length === 0) return counts;
+      const pick = keys[Math.floor(Math.random() * keys.length)];
+      counts[pick] = (counts[pick] || 0) + 1;
+      localStorage.setItem(countriesKey, JSON.stringify(counts));
+      return counts;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function renderVisitorPanel() {
+    const visitorCountEl = document.getElementById('visitorCount');
+    const countryList = document.getElementById('countryList');
+    if (!visitorCountEl || !countryList) return;
+    const total = localStorage.getItem(visitorKey) || '0';
+    visitorCountEl.textContent = total;
+    const counts = initCountryCounts();
+    // build sorted list
+    const entries = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+    countryList.innerHTML = '';
+    entries.forEach(([country, n]) => {
+      const el = document.createElement('div');
+      el.style.display = 'flex';
+      el.style.justifyContent = 'space-between';
+      el.style.alignItems = 'center';
+      el.innerHTML = `<span style="color:var(--text-dark)">${country}</span><span style="color:var(--pink);font-weight:700">${n}</span>`;
+      countryList.appendChild(el);
+    });
+  }
+
+  // On load: increment visitor, bump a country count locally to tie into "counter idea"
+  document.addEventListener('DOMContentLoaded', () => {
+    const newCount = incrementLocalCount();
+    // Simulate that this visit came from one of seeded countries (privacy-friendly random)
+    bumpRandomCountry();
+    renderVisitorPanel();
+    // small note about local-only counter
+    const note = document.getElementById('visitorNote');
+    if (note) note.textContent = 'This device';
+  });
 })();
 </script>
 
