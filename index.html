@@ -22,6 +22,7 @@
   --shadow: 0 20px 40px rgba(0,0,0,.08);
   --lookbook-bg: #f7f3ef;
   --lookbook-card-bg: #fffaf7;
+  --lookbook-height: 520px; /* central height for media area */
 }
 
 /* Reset / base */
@@ -189,7 +190,7 @@ nav a:hover::after { width: 100%; }
   font-weight: 700;
 }
 
-/* ================== LOOKBOOK (SMOOTH SLIDESHOW) ================== */
+/* ================== LOOKBOOK (SMOOTH SLIDESHOW + VIDEO) ================== */
 #lookbook {
   background: var(--lookbook-bg);
 }
@@ -202,14 +203,16 @@ nav a:hover::after { width: 100%; }
 }
 .lookbook-card {
   width: 100%;
-  max-width: 980px;
+  max-width: 1100px;
   background: var(--lookbook-card-bg);
-  padding: 36px;
+  padding: 24px;
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(15,10,10,.06);
   overflow: hidden;
   position: relative;
 }
+
+/* top meta row */
 .lookbook-top {
   display:flex;
   justify-content:space-between;
@@ -221,35 +224,60 @@ nav a:hover::after { width: 100%; }
   color: var(--text-muted);
 }
 
-/* Slideshow layout: stacked slides with crossfade */
+/* Inner layout: two columns - video + slideshow */
+.lookbook-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+/* shared media container to ensure same visual height */
+.lookbook-media {
+  height: var(--lookbook-height);
+  min-height: 280px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  padding: 12px; /* small padding so media doesn't touch card edges */
+}
+
+/* lookbook slider styling (kept inside .lookbook-media) */
 .lookbook-slider {
   position: relative;
+  width: 100%;
+  height: 100%;
   overflow: visible;
   border-radius: 12px;
   background: #fff;
-  padding: 28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-/* make slides a fixed visual area but center image inside and avoid crop */
+
+/* slides area: stacked slides with crossfade */
 .slides {
   position: relative;
   width: 100%;
-  height: 520px;
-  min-height: 320px;
-  display: block;
+  height: 100%;
   background: transparent;
 }
 
-/* Each slide is absolutely stacked but uses flex centering so images are not stretched/cropped */
+/* Slide layer centers the image and prevents cropping */
 .slide {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px; /* keep image away from edges */
+  padding: 8px;
   opacity: 0;
   transform: scale(1.02);
-  transition: opacity 800ms cubic-bezier(.2,.8,.2,1), transform 800ms cubic-bezier(.2,.8,.2,1);
+  transition: opacity 600ms cubic-bezier(.2,.8,.2,1), transform 600ms cubic-bezier(.2,.8,.2,1);
   will-change: opacity, transform;
 }
 .slide.active {
@@ -265,22 +293,43 @@ nav a:hover::after { width: 100%; }
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 30px 60px rgba(15,10,10,.12);
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(15,10,10,.08);
   display: block;
   background: #fff;
 }
 
-/* Controls overlay */
+/* video styling: contained, centered, no crop */
+.lookbook-video {
+  width: 100%;
+  height: 100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.lookbook-video video {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(15,10,10,.08);
+  background: #000;
+  display: block;
+}
+
+/* Controls overlay (positioned above both media sides) */
 .lookbook-controls {
   position: absolute;
-  left: 16px;
-  right: 16px;
+  left: 24px;
+  right: 24px;
   top: 50%;
   transform: translateY(-50%);
   display:flex;
   justify-content:space-between;
   pointer-events: none;
+  z-index: 10;
 }
 .btn-ctrl {
   background: rgba(255,255,255,.95);
@@ -306,7 +355,7 @@ nav a:hover::after { width: 100%; }
 }
 .dot.active { background: var(--pink); }
 
-/* Fullscreen viewer */
+/* Fullscreen viewer (unchanged) */
 .lookbook-viewer {
   position: fixed;
   inset: 0;
@@ -414,14 +463,20 @@ footer a {
 
 /* ================== RESPONSIVE ================== */
 @media(max-width:1100px){
-  .slides { height: 480px; }
+  :root { --lookbook-height: 480px; }
 }
 @media(max-width:900px){
   .hero-grid,
   .about-grid {
     grid-template-columns: 1fr;
   }
-  .slides { height: 360px; }
+  :root { --lookbook-height: 360px; }
+  .lookbook-inner {
+    grid-template-columns: 1fr; /* stack video and slideshow on small screens */
+  }
+  .lookbook-card {
+    padding: 18px;
+  }
   .viewer-content { height: 88vh; }
 }
 </style>
@@ -497,30 +552,52 @@ footer a {
 
 <section id="lookbook" class="section">
   <h2 class="section-title">Lookbook</h2>
-  <p class="section-subtitle">A smooth, elegant slideshow — replace the 14 placeholders with your PNGs when ready.</p>
+  <p class="section-subtitle">A smooth, elegant slideshow beside a short video — both sides keep their full aspect and are fully visible.</p>
 
   <div class="container lookbook-wrap reveal">
     <div class="lookbook-card" id="lookbookCard">
       <div class="lookbook-top">
         <div>
           <h3 style="margin:0;font-family:'Playfair Display',serif;color:var(--text-dark);">Cream Beige Lookbook</h3>
-          <div class="meta">Autoplay slideshow · click image to open fullscreen · swipe or arrow keys to navigate.</div>
+          <div class="meta">Autoplay slideshow · click image to open fullscreen · swipe or arrow keys to navigate. Video plays beside the slideshow.</div>
         </div>
         <div aria-hidden="true">
-          <!-- Canva button removed -->
+          <!-- top-right controls / buttons could go here -->
         </div>
       </div>
 
-      <div class="lookbook-slider" aria-roledescription="carousel">
-        <div class="slides" id="slides" aria-live="polite"></div>
+      <!-- Inner layout: video + slideshow -->
+      <div class="lookbook-inner">
+        <!-- Video column -->
+        <div class="lookbook-media lookbook-video" aria-hidden="false">
+          <!-- raw.githubusercontent.com path for the video (branch/commit provided in prompt) -->
+          <video
+            id="lookbookSideVideo"
+            src="https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/bbd33d5cc6bb2c2488e379ffcffd54eaee0db482/Beige%20and%20Brown%20Modern%20Fashion%20Forward%20Instagram%20Story%20Video%20(1).mp4"
+            controls
+            playsinline
+            muted
+            loop
+            preload="metadata"
+            poster=""
+            aria-label="Lookbook side video"
+          ></video>
+        </div>
 
-        <div class="lookbook-controls" aria-hidden="true">
-          <button class="btn-ctrl" id="prevBtn" title="Previous slide" aria-label="Previous slide">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <button class="btn-ctrl" id="nextBtn" title="Next slide" aria-label="Next slide">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
+        <!-- Slideshow column -->
+        <div class="lookbook-media">
+          <div class="lookbook-slider" aria-roledescription="carousel">
+            <div class="slides" id="slides" aria-live="polite"></div>
+
+            <div class="lookbook-controls" aria-hidden="true">
+              <button class="btn-ctrl" id="prevBtn" title="Previous slide" aria-label="Previous slide">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="btn-ctrl" id="nextBtn" title="Next slide" aria-label="Next slide">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -594,10 +671,8 @@ window.addEventListener('scroll', () => {
   });
 });
 
-/* Smooth Lookbook slideshow (14 slots) */
+/* Smooth Lookbook slideshow (14 slots) + side video behaviour */
 (function(){
-  // --- IMPORTANT:
-  // Replaced the 14 placeholder URLs with your uploaded images (1.png … 14.png) using raw.githubusercontent URLs at the provided commit.
   const LOOKBOOK_IMAGES = [
     'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/1.png',
     'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/2.png',
@@ -624,6 +699,7 @@ window.addEventListener('scroll', () => {
   const viewerClose = document.getElementById('viewerClose');
   const viewerPrev = document.getElementById('viewerPrev');
   const viewerNext = document.getElementById('viewerNext');
+  const sideVideo = document.getElementById('lookbookSideVideo');
 
   const total = LOOKBOOK_IMAGES.length;
   let current = 0;
@@ -639,7 +715,7 @@ window.addEventListener('scroll', () => {
       const img = document.createElement('img');
       img.src = src;
       img.alt = `Lookbook image ${i + 1}`;
-      // graceful fallback if image missing: keep src but the browser will show broken image; when you upload images replace URLs
+      // Use natural sizing / object-fit: contain so images are fully visible inside the media box
       slide.appendChild(img);
       slidesEl.appendChild(slide);
     });
@@ -748,11 +824,17 @@ window.addEventListener('scroll', () => {
     resetAutoplay();
   });
 
-  // pause on hover
-  sliderContainer.addEventListener('mouseenter', stopAutoplay);
-  sliderContainer.addEventListener('mouseleave', startAutoplay);
+  // pause autoplay on hover/focus of slider and pause the side video while interacting with slider
+  sliderContainer.addEventListener('mouseenter', () => {
+    stopAutoplay();
+    if (sideVideo && !sideVideo.paused) { sideVideo.pause(); sliderContainer.dataset.videoPausedForHover = 'true'; }
+  });
+  sliderContainer.addEventListener('mouseleave', () => {
+    startAutoplay();
+    if (sideVideo && sliderContainer.dataset.videoPausedForHover === 'true') { sideVideo.play().catch(()=>{}); sliderContainer.dataset.videoPausedForHover = ''; }
+  });
 
-  // Viewer
+  // pause video when viewer is opened
   function openViewer(index) {
     index = (index + total) % total;
     const src = LOOKBOOK_IMAGES[index];
@@ -761,12 +843,14 @@ window.addEventListener('scroll', () => {
     viewer.setAttribute('aria-hidden', 'false');
     viewer.dataset.index = String(index);
     stopAutoplay();
+    if (sideVideo && !sideVideo.paused) { sideVideo.pause(); viewer.dataset.videoPausedForViewer = 'true'; }
   }
   function closeViewer() {
     viewer.classList.remove('open');
     viewer.setAttribute('aria-hidden', 'true');
     viewerImg.src = '';
     startAutoplay();
+    if (sideVideo && viewer.dataset.videoPausedForViewer === 'true') { sideVideo.play().catch(()=>{}); viewer.dataset.videoPausedForViewer = ''; }
   }
   function viewerNavigate(dir) {
     const idx = Number(viewer.dataset.index || 0);
@@ -781,6 +865,16 @@ window.addEventListener('scroll', () => {
   });
   viewerPrev.addEventListener('click', () => viewerNavigate(-1));
   viewerNext.addEventListener('click', () => viewerNavigate(1));
+
+  // autoplay side video muted by default; try playing when page loads (will succeed if browser allows autoplay muted)
+  if (sideVideo) {
+    sideVideo.muted = true;
+    sideVideo.loop = true;
+    // attempt to autoplay (modern browsers require muted for autoplay)
+    sideVideo.play().catch(() => {
+      // ignore autoplay rejection; user can still press play
+    });
+  }
 
   // Initialize
   buildSlides();
