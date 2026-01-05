@@ -63,7 +63,7 @@ header {
   top: 0;
   z-index: 999;
   backdrop-filter: blur(10px);
-  background: rgba(255,240,246,.8);
+  background: rgba(255,240,246,.92);
   border-bottom: 1px solid rgba(0,0,0,.05);
 }
 .nav {
@@ -85,7 +85,7 @@ header {
   border-radius: 8px;
 }
 nav a {
-  margin-left: 24px;
+  margin-left: 16px;
   text-decoration: none;
   color: var(--pink);
   font-weight: 600;
@@ -103,12 +103,21 @@ nav a::after {
 }
 nav a:hover::after { width: 100%; }
 
+.header-actions { display:flex; gap:12px; align-items:center; }
+.search-input { padding:8px 12px; border-radius:999px; border:1px solid #eee; }
+
 /* ================== HERO ================== */
 .hero {
   background: linear-gradient(135deg, #ffe4ef, #ffffff);
-  padding: 120px 0;
+  padding: 90px 0 120px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-video-bg {
+  position: absolute; inset:0; z-index:0; opacity:.18; pointer-events:none;
 }
 .hero-grid {
+  position: relative; z-index:2;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 50px;
@@ -134,349 +143,84 @@ nav a:hover::after { width: 100%; }
   box-shadow: var(--shadow);
   transition: .3s;
 }
-.hero .btn:hover {
-  background: var(--pink-dark);
-  transform: translateY(-3px);
-}
-.hero-images {
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 16px;
-}
-.hero-images img {
-  width: 100%;
-  height: 260px;
-  object-fit: cover;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
+.hero .btn:hover { background: var(--pink-dark); transform: translateY(-3px); }
+.hero-images { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+.hero-images img { width:100%; height:140px; object-fit:cover; border-radius:12px; }
 
 /* ================== PRODUCTS ================== */
-.products {
-  background: var(--pink-light);
-}
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-  gap: 28px;
-}
-.product {
-  background: white;
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  transition: .35s;
-}
-.product:hover {
-  transform: translateY(-8px);
-}
-.product img {
-  width: 100%;
-  height: 300px;
-  object-fit: cover;
-}
-.product-info {
-  padding: 20px;
-}
-.product-info h3 {
-  color: var(--pink);
-  font-size: 1.1rem;
-}
-.product-info p {
-  color: var(--text-muted);
-  margin: 6px 0 12px;
-}
-.price {
-  font-weight: 700;
-}
+.products { background: var(--pink-light); }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 28px; }
+.product { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: .35s; }
+.product:hover { transform: translateY(-8px); }
+.product img { width: 100%; height: 300px; object-fit: cover; }
+.product-info { padding: 20px; }
+.product-info h3 { color: var(--pink); font-size: 1.1rem; }
+.price { font-weight: 700; }
 
-/* ================== LOOKBOOK (SMOOTH SLIDESHOW + VIDEO) ================== */
-#lookbook {
-  background: var(--lookbook-bg);
-}
-.lookbook-wrap {
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-.lookbook-card {
-  width: 100%;
-  max-width: 1100px;
-  background: var(--lookbook-card-bg);
-  padding: 24px;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(15,10,10,.06);
-  overflow: hidden;
-  position: relative;
-}
+/* Simple carousel for featured products */
+.carousel { position: relative; overflow: hidden; }
+.carousel-track { display:flex; gap:20px; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+.carousel-item { min-width: 300px; flex: 0 0 auto; }
+.carousel-controls { position:absolute; left:16px; right:16px; top:50%; transform:translateY(-50%); display:flex; justify-content:space-between; z-index:2; }
 
-/* top meta row */
-.lookbook-top {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  margin-bottom:18px;
-}
-.lookbook-top .meta {
-  color: var(--text-muted);
-}
-
-/* Inner layout: two columns - video + slideshow */
-.lookbook-inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  align-items: center;
-}
-
-/* shared media container to ensure same visual height */
-.lookbook-media {
-  height: var(--lookbook-height);
-  min-height: 280px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: transparent;
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-  padding: 12px; /* small padding so media doesn't touch card edges */
-}
-
-/* lookbook slider styling (kept inside .lookbook-media) */
-.lookbook-slider {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  border-radius: 12px;
-  background: #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* slides area: stacked slides with crossfade */
-.slides {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-}
-
-/* Slide layer centers the image and prevents cropping */
-.slide {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-  opacity: 0;
-  transform: scale(1.02);
-  transition: opacity 600ms cubic-bezier(.2,.8,.2,1), transform 600ms cubic-bezier(.2,.8,.2,1);
-  will-change: opacity, transform;
-}
-.slide.active {
-  opacity: 1;
-  transform: scale(1);
-  z-index: 2;
-}
-
-/* Images are fully visible (contained) and centered, never cropped */
-.slide img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 20px 40px rgba(15,10,10,.08);
-  display: block;
-  background: #fff;
-}
-
-/* video styling: contained, centered, no crop */
-.lookbook-video {
-  width: 100%;
-  height: 100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.lookbook-video video {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 20px 40px rgba(15,10,10,.08);
-  background: #000;
-  display: block;
-}
-
-/* Controls overlay (positioned above both media sides) */
-.lookbook-controls {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  top: 50%;
-  transform: translateY(-50%);
-  display:flex;
-  justify-content:space-between;
-  pointer-events: none;
-  z-index: 10;
-}
-.btn-ctrl {
-  background: rgba(255,255,255,.95);
-  pointer-events: auto;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(10,10,10,.08);
-  cursor: pointer;
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-.btn-ctrl svg { width: 18px; height: 18px; color: var(--pink); }
-.dots {
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  margin-top:14px;
-}
-.dot {
-  width:10px;height:10px;border-radius:50%;background:#e9e2db;cursor:pointer;
-}
+/* ================== LOOKBOOK (MULTI VIDEO + SLIDESHOW) ================== */
+#lookbook { background: var(--lookbook-bg); }
+.lookbook-wrap { display: flex; gap: 24px; align-items: center; justify-content: center; flex-direction: column; }
+.lookbook-card { width: 100%; max-width: 1100px; background: var(--lookbook-card-bg); padding: 24px; border-radius: 20px; box-shadow: 0 20px 40px rgba(15,10,10,.06); overflow: hidden; position: relative; }
+.lookbook-top { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:18px; }
+.lookbook-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; }
+.lookbook-media { height: var(--lookbook-height); min-height: 280px; display:flex; align-items:center; justify-content:center; background: transparent; border-radius: 12px; overflow: hidden; position: relative; padding: 12px; }
+.lookbook-slider { position: relative; width: 100%; height: 100%; overflow: visible; border-radius: 12px; background: #fff; display:flex; align-items:center; justify-content:center; }
+.slides { position: relative; width: 100%; height: 100%; background: transparent; }
+.slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 8px; opacity: 0; transform: scale(1.02); transition: opacity 600ms cubic-bezier(.2,.8,.2,1), transform 600ms cubic-bezier(.2,.8,.2,1); will-change: opacity, transform; }
+.slide.active { opacity: 1; transform: scale(1); z-index: 2; }
+.slide img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 20px 40px rgba(15,10,10,.08); display: block; background: #fff; }
+.lookbook-video { width: 100%; height: 100%; display:flex; align-items:center; justify-content:center; }
+.lookbook-video video { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px; box-shadow: 0 20px 40px rgba(15,10,10,.08); background: #000; display: block; }
+.lookbook-controls { position: absolute; left: 24px; right: 24px; top: 50%; transform: translateY(-50%); display:flex; justify-content:space-between; pointer-events: none; z-index: 10; }
+.btn-ctrl { background: rgba(255,255,255,.95); pointer-events: auto; border: none; padding: 10px 14px; border-radius: 10px; box-shadow: 0 8px 20px rgba(10,10,10,.08); cursor: pointer; display:flex; gap:8px; align-items:center; }
+.dots { display:flex; gap:8px; justify-content:center; margin-top:14px; }
+.dot { width:10px;height:10px;border-radius:50%;background:#e9e2db;cursor:pointer; }
 .dot.active { background: var(--pink); }
 
-/* Fullscreen viewer (unchanged) */
-.lookbook-viewer {
-  position: fixed;
-  inset: 0;
-  background: rgba(12,10,9,.9);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-.lookbook-viewer.open {
-  display:flex;
-}
-.viewer-content {
-  width: 92%;
-  max-width: 1200px;
-  height: 85vh;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.viewer-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: #f9f6f2;
-}
+/* Video playlist thumbnails */
+.playlist { display:flex; gap:10px; align-items:center; overflow:auto; padding-top:12px; }
+.playlist button { background:transparent; border:1px solid #eee; padding:6px; border-radius:8px; cursor:pointer; }
+.playlist img { height:56px; width:100px; object-fit:cover; border-radius:6px; display:block; }
 
-/* ================== ABOUT ================== */
-.about {
-  background: linear-gradient(180deg,#fff,#fff0f6);
-}
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
-}
-.about img {
-  width: 100%;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
+/* Fullscreen viewer */
+.lookbook-viewer { position: fixed; inset: 0; background: rgba(12,10,9,.9); display: none; align-items: center; justify-content: center; z-index: 2000; }
+.lookbook-viewer.open { display:flex; }
+.viewer-content { width: 92%; max-width: 1200px; height: 85vh; background: #fff; border-radius: 12px; overflow: hidden; position: relative; display:flex; align-items:center; justify-content:center; }
+.viewer-image { width: 100%; height: 100%; object-fit: contain; background: #f9f6f2; }
 
-/* ================== CONTACT ================== */
-.contact-form {
-  max-width: 600px;
-  margin: auto;
-  display: grid;
-  gap: 16px;
-}
-.contact-form input,
-.contact-form textarea {
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  font-size: 1rem;
-}
-.contact-form button {
-  background: var(--pink);
-  color: white;
-  border: none;
-  padding: 14px;
-  border-radius: 40px;
-  font-weight: 600;
-  cursor: pointer;
-}
+/* ================== GALLERY ================== */
+.gallery-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.gallery-grid img { width:100%; height:220px; object-fit:cover; border-radius:10px; cursor:pointer; }
+
+/* ================== BRANDS & INSTAGRAM ================== */
+.brands { display:flex; gap:20px; align-items:center; overflow:auto; padding:12px 0; }
+.brand { min-width:120px; height:60px; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:8px; box-shadow: 0 6px 20px rgba(0,0,0,.06); }
+.instagram-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(120px,1fr)); gap:8px; }
+.instagram-grid img { width:100%; height:120px; object-fit:cover; border-radius:8px; }
+
+/* ================== NEWSLETTER ================== */
+.newsletter { background: linear-gradient(180deg,#fff,#fff0f6); padding:40px; border-radius:12px; box-shadow: var(--shadow); text-align:center; }
+.newsletter input { padding:12px 16px; border-radius:40px; border:1px solid #eee; width:320px; max-width:100%; }
 
 /* ================== FOOTER ================== */
-footer {
-  background: var(--pink);
-  color: white;
-  padding: 50px 0 30px;
-}
-.footer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-  gap: 24px;
-}
-footer a {
-  color: white;
-  text-decoration: none;
-  display: block;
-  margin-top: 6px;
-}
-.copyright {
-  text-align: center;
-  margin-top: 30px;
-  opacity: .8;
-}
+footer { background: var(--pink); color: white; padding: 50px 0 30px; }
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 24px; }
+footer a { color: white; text-decoration: none; display: block; margin-top: 6px; }
+.copyright { text-align: center; margin-top: 30px; opacity: .8; }
 
 /* ================== ANIMATION ================== */
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: 1s ease;
-}
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
-}
+.reveal { opacity: 0; transform: translateY(40px); transition: 1s ease; }
+.reveal.active { opacity: 1; transform: translateY(0); }
 
 /* ================== RESPONSIVE ================== */
-@media(max-width:1100px){
-  :root { --lookbook-height: 480px; }
-}
-@media(max-width:900px){
-  .hero-grid,
-  .about-grid {
-    grid-template-columns: 1fr;
-  }
-  :root { --lookbook-height: 360px; }
-  .lookbook-inner {
-    grid-template-columns: 1fr; /* stack video and slideshow on small screens */
-  }
-  .lookbook-card {
-    padding: 18px;
-  }
+@media(max-width:1100px){ :root { --lookbook-height: 480px; } }
+@media(max-width:900px){ .hero-grid, .about-grid { grid-template-columns: 1fr; } :root { --lookbook-height: 360px; } .lookbook-inner { grid-template-columns: 1fr; }
   .viewer-content { height: 88vh; }
 }
 </style>
@@ -490,28 +234,43 @@ footer a {
       <img src="https://raw.githubusercontent.com/yadavaarnav19-sketch/Fashion-Box/refs/heads/main/logo.png" alt="Fashion Box logo">
       Fashion Box
     </div>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#products">Collections</a>
-      <a href="#lookbook">Lookbook</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <div class="header-actions">
+      <input class="search-input" aria-label="Search site" placeholder="Search" />
+      <nav aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#products">Collections</a>
+        <a href="#lookbook">Lookbook</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
   </div>
 </header>
 
 <section id="home" class="hero">
+  <!-- decorative muted video background to give motion to hero -->
+  <video class="hero-video-bg" autoplay muted loop playsinline src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" aria-hidden="true"></video>
+
   <div class="container hero-grid reveal">
     <div>
       <h1>Elegance in Every Stitch</h1>
-      <p>Luxury pink fashion designed with timeless silhouettes and modern craftsmanship.</p>
+      <p>Luxury pink fashion designed with timeless silhouettes and modern craftsmanship. Explore new arrivals, exclusive video lookbooks, styled editorials and curated collections.</p>
       <a class="btn" href="#products">Explore Collection</a>
+
+      <div style="margin-top:18px; display:flex; gap:10px;">
+        <a class="btn" href="#lookbook" style="background:white;color:var(--pink);">Watch Lookbook</a>
+        <a class="btn" href="#gallery" style="background:transparent;border:2px solid white;color:white;">View Gallery</a>
+      </div>
+
+      <div style="margin-top:18px;font-size:.9rem;color:var(--text-muted);">Free shipping on orders over ₹5,000 • Easy returns • Sustainable fabrics</div>
     </div>
+
     <div class="hero-images" aria-hidden="true">
-      <img src="https://i.pinimg.com/736x/92/9a/fe/929afe18e3f12712d2d092eca309049a.jpg" alt="">
-      <img src="https://i.pinimg.com/736x/64/6f/4a/646f4a7cc982f833515507275f79225c.jpg" alt="">
-      <img src="https://i.pinimg.com/736x/03/05/f2/0305f25588055c588afd95a37212e4a9.jpg" alt="">
-      <img src="https://i.pinimg.com/736x/bb/ab/fc/bbabfcdf52d914b14f26b0992a1f4b5e.jpg" alt="">
+      <img src="https://images.unsplash.com/photo-1520975698515-06e5a4f3b6b3?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1" alt="">
+      <img src="https://images.unsplash.com/photo-1514996937319-344454492b37?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=2" alt="">
+      <img src="https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=3" alt="">
+      <img src="https://images.unsplash.com/photo-1520975698515-06e5a4f3b6b3?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1" alt="">
     </div>
   </div>
 </section>
@@ -520,68 +279,80 @@ footer a {
   <h2 class="section-title">Featured Collection</h2>
   <p class="section-subtitle">Hand-picked designs crafted for elegance and confidence.</p>
 
-  <div class="container product-grid reveal">
-    <div class="product">
-      <img src="https://cdn.exoticindia.com/images/products/original/textiles-2019/taa777.jpg" alt="">
-      <div class="product-info">
-        <h3>Rose Lehenga</h3>
-        <p>Traditional embroidery</p>
-        <span class="price">₹3,499</span>
+  <div class="container reveal">
+    <!-- Simple product carousel -->
+    <div class="carousel" id="productCarousel">
+      <div class="carousel-controls" aria-hidden="true">
+        <button class="btn-ctrl" id="prodPrev">‹</button>
+        <button class="btn-ctrl" id="prodNext">›</button>
       </div>
-    </div>
+      <div class="carousel-track" id="carouselTrack">
+        <div class="carousel-item product">
+          <img loading="lazy" src="https://cdn.exoticindia.com/images/products/original/textiles-2019/taa777.jpg" alt="Rose Lehenga">
+          <div class="product-info">
+            <h3>Rose Lehenga</h3>
+            <p>Traditional embroidery</p>
+            <span class="price">₹3,499</span>
+          </div>
+        </div>
 
-    <div class="product">
-      <img src="https://media.urbanwomania.com/wp-content/uploads/2023/05/Blush-Pink-Banarasi-Saree.webp" alt="">
-      <div class="product-info">
-        <h3>Silk Saree</h3>
-        <p>Banarasi weave</p>
-        <span class="price">₹4,299</span>
-      </div>
-    </div>
+        <div class="carousel-item product">
+          <img loading="lazy" src="https://media.urbanwomania.com/wp-content/uploads/2023/05/Blush-Pink-Banarasi-Saree.webp" alt="Silk Saree">
+          <div class="product-info">
+            <h3>Silk Saree</h3>
+            <p>Banarasi weave</p>
+            <span class="price">₹4,299</span>
+          </div>
+        </div>
 
-    <div class="product">
-      <img src="https://d2x02matzb08hy.cloudfront.net/img/clothing/hero_image/781222833/Untitled_design__19_.jpg" alt="">
-      <div class="product-info">
-        <h3>Blush Gown</h3>
-        <p>Evening elegance</p>
-        <span class="price">₹2,199</span>
+        <div class="carousel-item product">
+          <img loading="lazy" src="https://d2x02matzb08hy.cloudfront.net/img/clothing/hero_image/781222833/Untitled_design__19_.jpg" alt="Blush Gown">
+          <div class="product-info">
+            <h3>Blush Gown</h3>
+            <p>Evening elegance</p>
+            <span class="price">₹2,199</span>
+          </div>
+        </div>
+
+        <div class="carousel-item product">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1520975698515-06e5a4f3b6b3?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1" alt="Summer Dress">
+          <div class="product-info">
+            <h3>Summer Dress</h3>
+            <p>Light linen</p>
+            <span class="price">₹1,799</span>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
+
 </section>
 
 <section id="lookbook" class="section">
-  <h2 class="section-title">Lookbook</h2>
-  <p class="section-subtitle">A smooth, elegant slideshow beside a short video — both sides keep their full aspect and are fully visible.</p>
+  <h2 class="section-title">Lookbook & Videos</h2>
+  <p class="section-subtitle">An expanded lookbook with multiple videos, editorial editorials and a smooth slideshow. Click any image to open fullscreen.</p>
 
   <div class="container lookbook-wrap reveal">
     <div class="lookbook-card" id="lookbookCard">
       <div class="lookbook-top">
         <div>
           <h3 style="margin:0;font-family:'Playfair Display',serif;color:var(--text-dark);">Cream Beige Lookbook</h3>
-          <div class="meta">Autoplay slideshow · click image to open fullscreen · swipe or arrow keys to navigate. Video plays beside the slideshow.</div>
+          <div class="meta">Autoplay slideshow · click image to open fullscreen · swipe or arrow keys to navigate. Pick different lookbook videos from the playlist below.</div>
         </div>
         <div aria-hidden="true">
           <!-- top-right controls / buttons could go here -->
         </div>
       </div>
 
-      <!-- Inner layout: video + slideshow -->
+      <!-- Inner layout: video column + slideshow column -->
       <div class="lookbook-inner">
-        <!-- Video column -->
+        <!-- Video column (main player) -->
         <div class="lookbook-media lookbook-video" aria-hidden="false">
-          <!-- raw.githubusercontent.com path for the video (branch/commit provided in prompt) -->
-          <video
-            id="lookbookSideVideo"
-            src="https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/bbd33d5cc6bb2c2488e379ffcffd54eaee0db482/Beige%20and%20Brown%20Modern%20Fashion%20Forward%20Instagram%20Story%20Video%20(1).mp4"
-            controls
-            playsinline
-            muted
-            loop
-            preload="metadata"
-            poster=""
-            aria-label="Lookbook side video"
-          ></video>
+          <video id="mainLookbookVideo" controls playsinline muted preload="metadata" poster="" aria-label="Main lookbook video">
+            <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
         </div>
 
         <!-- Slideshow column -->
@@ -590,22 +361,22 @@ footer a {
             <div class="slides" id="slides" aria-live="polite"></div>
 
             <div class="lookbook-controls" aria-hidden="true">
-              <button class="btn-ctrl" id="prevBtn" title="Previous slide" aria-label="Previous slide">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
-              <button class="btn-ctrl" id="nextBtn" title="Next slide" aria-label="Next slide">
-                <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </button>
+              <button class="btn-ctrl" id="prevBtn" title="Previous slide" aria-label="Previous slide">‹</button>
+              <button class="btn-ctrl" id="nextBtn" title="Next slide" aria-label="Next slide">›</button>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="playlist" id="videoPlaylist" aria-label="Video lookbook playlist">
+        <!-- JS will populate playlist thumbnails -->
       </div>
 
       <div class="dots" id="dots" role="tablist" aria-label="Lookbook pagination"></div>
     </div>
   </div>
 
-  <!-- Fullscreen viewer -->
+  <!-- Fullscreen viewer (reused for any gallery image click) -->
   <div class="lookbook-viewer" id="viewer" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="viewer-content" role="document">
       <button class="btn-ctrl" id="viewerPrev" style="position:absolute;left:18px;top:50%;transform:translateY(-50%);" aria-label="Previous">‹</button>
@@ -614,13 +385,52 @@ footer a {
       <button class="btn-ctrl" id="viewerClose" style="position:absolute;right:18px;top:12px;" aria-label="Close viewer">✕</button>
     </div>
   </div>
+
+</section>
+
+<section id="gallery" class="section">
+  <h2 class="section-title">Editorial Gallery</h2>
+  <p class="section-subtitle">A curated grid of campaign and behind-the-scenes photographs. Click any image to open it larger.</p>
+
+  <div class="container reveal">
+    <div class="gallery-grid" id="galleryGrid">
+      <!-- images populated by JS for easier extendability -->
+    </div>
+  </div>
+</section>
+
+<section id="brands" class="section">
+  <h2 class="section-title">Our Partners & Favorite Brands</h2>
+  <p class="section-subtitle">Trusted manufacturers and curated partners.</p>
+
+  <div class="container reveal">
+    <div class="brands" id="brandsRow" aria-hidden="false">
+      <div class="brand"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Adidas_Logo.svg" alt="Adidas" style="height:40px;"/></div>
+      <div class="brand"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/1/19/Biba_logo.svg" alt="Biba" style="height:30px;"/></div>
+      <div class="brand"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/0/08/Zara_Logo.svg" alt="Zara" style="height:28px;"/></div>
+      <div class="brand"><img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/3/34/H%26M-Logo.svg" alt="H&M" style="height:26px;"/></div>
+    </div>
+  </div>
+</section>
+
+<section id="instagram" class="section">
+  <h2 class="section-title">Instagram</h2>
+  <p class="section-subtitle">Our latest social posts and styling inspiration.</p>
+  <div class="container reveal">
+    <div class="instagram-grid" id="instaGrid"></div>
+  </div>
 </section>
 
 <section id="about" class="section about">
   <div class="container about-grid reveal">
     <div>
       <h2 class="section-title">About Fashion Box</h2>
-      <p class="section-subtitle">Slow fashion, artisan craftsmanship & timeless beauty.</p>
+      <p class="section-subtitle">Slow fashion, artisan craftsmanship & timeless beauty. We partner with local artisans and maintain transparency across our supply chain.</p>
+
+      <div style="margin-top:12px; display:flex; gap:8px;">
+        <a class="btn" href="#contact">Contact Sales</a>
+        <a class="btn" href="#newsletter" style="background:white;color:var(--pink);">Join Newsletter</a>
+      </div>
     </div>
     <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb" alt="">
   </div>
@@ -629,12 +439,25 @@ footer a {
 <section id="contact" class="section">
   <h2 class="section-title">Contact Us</h2>
   <p class="section-subtitle">We’d love to hear from you.</p>
-  <form class="contact-form reveal">
-    <input type="text" placeholder="Your Name">
-    <input type="email" placeholder="Email">
-    <textarea rows="4" placeholder="Message"></textarea>
+  <form class="contact-form reveal" onsubmit="event.preventDefault(); alert('Message sent — demo only');">
+    <input type="text" placeholder="Your Name" required>
+    <input type="email" placeholder="Email" required>
+    <textarea rows="4" placeholder="Message" required></textarea>
     <button>Send Message</button>
   </form>
+</section>
+
+<section id="newsletter" class="section">
+  <div class="container reveal">
+    <div class="newsletter">
+      <h3>Get early access to new drops</h3>
+      <p style="color:var(--text-muted);">Subscribe to our newsletter for exclusive previews, discounts and behind-the-scenes.</p>
+      <form onsubmit="event.preventDefault(); alert('Subscribed — demo only');" style="margin-top:12px;">
+        <input type="email" placeholder="Enter your email" required />
+        <button class="btn" style="margin-left:8px;">Subscribe</button>
+      </form>
+    </div>
+  </div>
 </section>
 
 <footer>
@@ -645,9 +468,9 @@ footer a {
     </div>
     <div>
       <h4>Explore</h4>
-      <a href="#">Home</a>
-      <a href="#">Collections</a>
-      <a href="#">Lookbook</a>
+      <a href="#home">Home</a>
+      <a href="#products">Collections</a>
+      <a href="#lookbook">Lookbook</a>
     </div>
     <div>
       <h4>Connect</h4>
@@ -655,8 +478,13 @@ footer a {
       <a href="#">Pinterest</a>
       <a href="#">Contact</a>
     </div>
+    <div>
+      <h4>Legal</h4>
+      <a href="#">Shipping & Returns</a>
+      <a href="#">Privacy</a>
+    </div>
   </div>
-  <div class="copyright">© 2025 Fashion Box. All rights reserved.</div>
+  <div class="copyright">© 2026 Fashion Box. All rights reserved.</div>
 </footer>
 
 <script>
@@ -671,23 +499,38 @@ window.addEventListener('scroll', () => {
   });
 });
 
-/* Smooth Lookbook slideshow (14 slots) + side video behaviour */
+/* PRODUCT CAROUSEL */
+(function(){
+  const track = document.getElementById('carouselTrack');
+  const prev = document.getElementById('prodPrev');
+  const next = document.getElementById('prodNext');
+  let idx = 0;
+  function update() {
+    const width = track.children[0].getBoundingClientRect().width + 20;
+    track.style.transform = `translateX(${-idx * width}px)`;
+  }
+  window.addEventListener('resize', update);
+  prev.addEventListener('click', () => { idx = Math.max(0, idx - 1); update(); });
+  next.addEventListener('click', () => { idx = Math.min(track.children.length - 3, idx + 1); update(); });
+  // autoplay
+  setInterval(()=>{ idx = (idx + 1) % Math.max(1, track.children.length - 2); update(); }, 4000);
+  update();
+})();
+
+/* LOOKBOOK + VIDEO PLAYLIST + SLIDESHOW */
 (function(){
   const LOOKBOOK_IMAGES = [
     'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/1.png',
     'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/2.png',
     'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/3.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/4.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/5.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/6.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/7.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/8.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/9.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/10.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/11.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/12.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/13.png',
-    'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/75e0c6f747e89aa048a1034dcc5149278297a608/14.png'
+    'https://images.unsplash.com/photo-1542089363-7b1b7b8b1d16?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=10',
+    'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=11',
+    'https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=12'
+  ];
+
+  const VIDEO_PLAYLIST = [
+    { src: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', thumb: 'https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217', title: 'Runway 1' },
+    { src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4', thumb: 'https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=13', title: 'Campaign BTS' }
   ];
 
   const slidesEl = document.getElementById('slides');
@@ -699,7 +542,8 @@ window.addEventListener('scroll', () => {
   const viewerClose = document.getElementById('viewerClose');
   const viewerPrev = document.getElementById('viewerPrev');
   const viewerNext = document.getElementById('viewerNext');
-  const sideVideo = document.getElementById('lookbookSideVideo');
+  const playlistEl = document.getElementById('videoPlaylist');
+  const mainVideo = document.getElementById('mainLookbookVideo');
 
   const total = LOOKBOOK_IMAGES.length;
   let current = 0;
@@ -713,13 +557,12 @@ window.addEventListener('scroll', () => {
       slide.className = 'slide';
       slide.setAttribute('data-index', String(i));
       const img = document.createElement('img');
+      img.loading = 'lazy';
       img.src = src;
       img.alt = `Lookbook image ${i + 1}`;
-      // Use natural sizing / object-fit: contain so images are fully visible inside the media box
       slide.appendChild(img);
       slidesEl.appendChild(slide);
     });
-    // mark first as active
     const first = slidesEl.querySelector('.slide');
     if (first) first.classList.add('active');
   }
@@ -743,7 +586,6 @@ window.addEventListener('scroll', () => {
     if (prev) prev.classList.remove('active');
     const next = slidesEl.querySelector(`.slide[data-index="${index}"]`);
     if (next) next.classList.add('active');
-    // update dots
     const dots = Array.from(dotsEl.children);
     dots.forEach((d, idx) => {
       d.classList.toggle('active', idx === index);
@@ -755,19 +597,34 @@ window.addEventListener('scroll', () => {
   function nextSlide() { goTo(current + 1); }
   function prevSlide() { goTo(current - 1); }
 
-  function startAutoplay() {
-    stopAutoplay();
-    if (total > 1) autoplayInterval = setInterval(nextSlide, AUTOPLAY_DELAY);
-  }
-  function stopAutoplay() {
-    if (autoplayInterval) {
-      clearInterval(autoplayInterval);
-      autoplayInterval = null;
-    }
-  }
+  function startAutoplay() { stopAutoplay(); if (total > 1) autoplayInterval = setInterval(nextSlide, AUTOPLAY_DELAY); }
+  function stopAutoplay() { if (autoplayInterval) { clearInterval(autoplayInterval); autoplayInterval = null; } }
   function resetAutoplay() { stopAutoplay(); startAutoplay(); }
 
-  // Events
+  // Playlist
+  function buildPlaylist() {
+    playlistEl.innerHTML = '';
+    VIDEO_PLAYLIST.forEach((v, i) => {
+      const btn = document.createElement('button');
+      btn.setAttribute('data-index', String(i));
+      btn.title = v.title;
+      const img = document.createElement('img');
+      img.src = v.thumb;
+      img.alt = v.title;
+      btn.appendChild(img);
+      btn.addEventListener('click', () => {
+        mainVideo.pause();
+        mainVideo.querySelectorAll('source').forEach(s => s.remove());
+        const src = document.createElement('source');
+        src.src = v.src; src.type = 'video/mp4';
+        mainVideo.appendChild(src);
+        mainVideo.load();
+        mainVideo.play().catch(()=>{});
+      });
+      playlistEl.appendChild(btn);
+    });
+  }
+
   nextBtn.addEventListener('click', (e) => { e.stopPropagation(); nextSlide(); resetAutoplay(); });
   prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prevSlide(); resetAutoplay(); });
 
@@ -780,14 +637,9 @@ window.addEventListener('scroll', () => {
   dotsEl.addEventListener('keydown', (e) => {
     const d = e.target.closest('.dot');
     if (!d) return;
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      goTo(Number(d.dataset.index));
-      resetAutoplay();
-    }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goTo(Number(d.dataset.index)); resetAutoplay(); }
   });
 
-  // click image -> open viewer on that index
   slidesEl.addEventListener('click', (e) => {
     const slide = e.target.closest('.slide');
     if (!slide) return;
@@ -810,31 +662,14 @@ window.addEventListener('scroll', () => {
   // touch swipe
   const sliderContainer = document.querySelector('.lookbook-slider');
   let touchStartX = 0;
-  sliderContainer.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-    stopAutoplay();
-  }, {passive:true});
-  sliderContainer.addEventListener('touchend', (e) => {
-    const endX = e.changedTouches[0].clientX;
-    const diff = touchStartX - endX;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) nextSlide();
-      else prevSlide();
-    }
-    resetAutoplay();
-  });
+  sliderContainer.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; stopAutoplay(); }, {passive:true});
+  sliderContainer.addEventListener('touchend', (e) => { const endX = e.changedTouches[0].clientX; const diff = touchStartX - endX; if (Math.abs(diff) > 40) { if (diff > 0) nextSlide(); else prevSlide(); } resetAutoplay(); });
 
   // pause autoplay on hover/focus of slider and pause the side video while interacting with slider
-  sliderContainer.addEventListener('mouseenter', () => {
-    stopAutoplay();
-    if (sideVideo && !sideVideo.paused) { sideVideo.pause(); sliderContainer.dataset.videoPausedForHover = 'true'; }
-  });
-  sliderContainer.addEventListener('mouseleave', () => {
-    startAutoplay();
-    if (sideVideo && sliderContainer.dataset.videoPausedForHover === 'true') { sideVideo.play().catch(()=>{}); sliderContainer.dataset.videoPausedForHover = ''; }
-  });
+  sliderContainer.addEventListener('mouseenter', () => { stopAutoplay(); if (mainVideo && !mainVideo.paused) { mainVideo.pause(); sliderContainer.dataset.videoPausedForHover = 'true'; } });
+  sliderContainer.addEventListener('mouseleave', () => { startAutoplay(); if (mainVideo && sliderContainer.dataset.videoPausedForHover === 'true') { mainVideo.play().catch(()=>{}); sliderContainer.dataset.videoPausedForHover = ''; } });
 
-  // pause video when viewer is opened
+  // viewer functions
   function openViewer(index) {
     index = (index + total) % total;
     const src = LOOKBOOK_IMAGES[index];
@@ -843,14 +678,14 @@ window.addEventListener('scroll', () => {
     viewer.setAttribute('aria-hidden', 'false');
     viewer.dataset.index = String(index);
     stopAutoplay();
-    if (sideVideo && !sideVideo.paused) { sideVideo.pause(); viewer.dataset.videoPausedForViewer = 'true'; }
+    if (mainVideo && !mainVideo.paused) { mainVideo.pause(); viewer.dataset.videoPausedForViewer = 'true'; }
   }
   function closeViewer() {
     viewer.classList.remove('open');
     viewer.setAttribute('aria-hidden', 'true');
     viewerImg.src = '';
     startAutoplay();
-    if (sideVideo && viewer.dataset.videoPausedForViewer === 'true') { sideVideo.play().catch(()=>{}); viewer.dataset.videoPausedForViewer = ''; }
+    if (mainVideo && viewer.dataset.videoPausedForViewer === 'true') { mainVideo.play().catch(()=>{}); viewer.dataset.videoPausedForViewer = ''; }
   }
   function viewerNavigate(dir) {
     const idx = Number(viewer.dataset.index || 0);
@@ -860,47 +695,57 @@ window.addEventListener('scroll', () => {
   }
 
   viewerClose.addEventListener('click', closeViewer);
-  viewer.addEventListener('click', (e) => {
-    if (e.target === viewer) closeViewer();
-  });
+  viewer.addEventListener('click', (e) => { if (e.target === viewer) closeViewer(); });
   viewerPrev.addEventListener('click', () => viewerNavigate(-1));
   viewerNext.addEventListener('click', () => viewerNavigate(1));
 
-  // autoplay side video muted by default; try playing when page loads (will succeed if browser allows autoplay muted)
-  if (sideVideo) {
-    sideVideo.muted = true;
-    sideVideo.loop = true;
-    // attempt to autoplay (modern browsers require muted for autoplay)
-    sideVideo.play().catch(() => {
-      // ignore autoplay rejection; user can still press play
-    });
+  // autoplay side video muted by default
+  if (mainVideo) {
+    mainVideo.muted = true;
+    mainVideo.loop = true;
+    mainVideo.play().catch(()=>{});
   }
 
-  // Initialize
-  buildSlides();
-  buildDots();
-  goTo(0);
-  startAutoplay();
+  buildSlides(); buildDots(); buildPlaylist(); goTo(0); startAutoplay();
 
-  // Expose a tiny helper for dev testing in console:
-  window.Lookbook = {
-    goTo,
-    nextSlide,
-    prevSlide,
-    startAutoplay,
-    stopAutoplay,
-    setImages: (arr) => {
-      // utility to programmatically replace image array (useful if you upload later)
-      if (!Array.isArray(arr)) return;
-      LOOKBOOK_IMAGES.length = 0;
-      arr.forEach(u => LOOKBOOK_IMAGES.push(u));
-      buildSlides();
-      buildDots();
-      goTo(0);
-      resetAutoplay();
-    }
-  };
+  // expose for debugging
+  window.Lookbook = { goTo, nextSlide, prevSlide, startAutoplay, stopAutoplay };
 })();
+
+/* GALLERY population */
+(function(){
+  const GALLERY = [
+    'https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=21',
+    'https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=22',
+    'https://images.unsplash.com/photo-1514996937319-344454492b37?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=23',
+    'https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=24',
+    'https://images.unsplash.com/photo-1520975698515-06e5a4f3b6b3?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=25',
+    'https://images.unsplash.com/photo-1542089363-7b1b7b8b1d16?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=26'
+  ];
+  const grid = document.getElementById('galleryGrid');
+  GALLERY.forEach((src,i)=>{
+    const img = document.createElement('img');
+    img.src = src; img.alt = 'Editorial image '+(i+1);
+    img.loading = 'lazy';
+    img.addEventListener('click', ()=>{ document.getElementById('viewerImg').src = src; document.getElementById('viewer').classList.add('open'); document.getElementById('viewer').setAttribute('aria-hidden','false'); });
+    grid.appendChild(img);
+  });
+})();
+
+/* INSTAGRAM grid (demo) */
+(function(){
+  const INSTA = [
+    'https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=31',
+    'https://images.unsplash.com/photo-1520975698515-06e5a4f3b6b3?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=32',
+    'https://images.unsplash.com/photo-1514996937319-344454492b37?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=33',
+    'https://images.unsplash.com/photo-1542089363-7b1b7b8b1d16?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=34',
+    'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=35',
+    'https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=36'
+  ];
+  const insta = document.getElementById('instaGrid');
+  INSTA.forEach(src=>{ const img = document.createElement('img'); img.src = src; img.loading='lazy'; img.alt='Instagram post'; insta.appendChild(img); });
+})();
+
 </script>
 
 </body>
