@@ -34,206 +34,6 @@ body {
   color: var(--text-dark);
   line-height: 1.6;
 }
-<!-- START: Fashion Box - Themed Inspiration Button (paste before </body>) -->
-<style>
-  /* Themed button styles (uses your CSS variables if present) */
-  :root {
-    --fb-pink: var(--pink, #d63384);
-    --fb-pink-dark: var(--pink-dark, #a61e63);
-    --fb-radius: 999px;
-    --fb-shadow: 0 12px 30px rgba(214,51,132,0.14);
-  }
-
-  /* Header nav button */
-  .inspiration-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
-    color: white;
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 999px;
-    font-weight: 700;
-    text-decoration: none;
-    border: 2px solid rgba(255,255,255,0.06);
-    box-shadow: var(--fb-shadow);
-    background-image: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)), linear-gradient(180deg, var(--fb-pink), var(--fb-pink-dark));
-    background-origin: border-box;
-    transition: transform .22s cubic-bezier(.2,.9,.3,1), box-shadow .22s, opacity .22s;
-    transform: translateY(0);
-    will-change: transform, opacity;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .inspiration-btn:hover,
-  .inspiration-btn:focus {
-    transform: translateY(-4px);
-    box-shadow: 0 18px 40px rgba(166,30,99,0.18);
-    outline: none;
-  }
-
-  .inspiration-btn:focus {
-    box-shadow: 0 0 0 4px rgba(214,51,132,0.12);
-  }
-
-  .inspiration-btn .icon {
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.18);
-    color: #fff;
-    font-size: 12px;
-    line-height: 18px;
-    text-align: center;
-  }
-
-  /* Small "visited" pill */
-  .inspiration-btn.visited {
-    opacity: 0.92;
-    filter: saturate(.98);
-  }
-
-  /* Floating CTA (bottom-right) */
-  .inspiration-floating {
-    position: fixed;
-    right: 20px;
-    bottom: 22px;
-    z-index: 1600;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)), linear-gradient(180deg, var(--fb-pink), var(--fb-pink-dark));
-    color: #fff;
-    box-shadow: 0 20px 50px rgba(166,30,99,0.18);
-    transform: translateY(18px);
-    opacity: 0;
-    transition: transform .36s cubic-bezier(.2,.9,.3,1), opacity .36s;
-    cursor: pointer;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.95rem;
-  }
-
-  .inspiration-floating.show {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  .inspiration-floating .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.18);
-    box-shadow: inset 0 -4px 8px rgba(0,0,0,0.06);
-  }
-
-  /* Small responsive tweaks */
-  @media (max-width: 720px) {
-    .inspiration-btn { padding: 8px 12px; font-size: 0.9rem; }
-    .inspiration-floating { right: 14px; bottom: 16px; padding: 10px 12px; font-size: 0.9rem; }
-  }
-</style>
-
-<script>
-  (function () {
-    const targetUrl = 'https://fashion-box.github.io/fashion-box-inspirations/';
-    const navSelector = 'header nav'; // where to insert the button (falls back to body)
-    const btnId = 'fbInspirationBtn';
-    const floatingId = 'fbInspirationFloating';
-    const visitedKey = 'fb_inspiration_visited_v1';
-
-    /* Create the header button element */
-    function createHeaderButton() {
-      const a = document.createElement('a');
-      a.id = btnId;
-      a.className = 'inspiration-btn';
-      a.href = targetUrl;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.setAttribute('aria-label', 'Open Fashion Box Inspirations (opens in new tab)');
-      a.innerHTML = '<span class="icon">★</span><span class="label">Inspirations</span>';
-      // mark visited if previously clicked
-      if (localStorage.getItem(visitedKey)) a.classList.add('visited');
-      // click handler to record visit and animate
-      a.addEventListener('click', function () {
-        localStorage.setItem(visitedKey, '1');
-        a.classList.add('visited');
-      });
-      return a;
-    }
-
-    /* Create floating CTA */
-    function createFloatingCTA() {
-      const a = document.createElement('a');
-      a.id = floatingId;
-      a.className = 'inspiration-floating';
-      a.href = targetUrl;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.setAttribute('aria-label', 'Open Inspirations');
-      a.innerHTML = '<span class="dot" aria-hidden="true"></span><span>Inspiration Boards</span>';
-      a.addEventListener('click', function () {
-        localStorage.setItem(visitedKey, '1');
-        // small pop animation
-        a.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.96)' }, { transform: 'scale(1)' }], { duration: 260 });
-      });
-      return a;
-    }
-
-    /* Insert header button into nav (or fallback to header container) */
-    function insertHeaderButton() {
-      const btn = createHeaderButton();
-      const nav = document.querySelector(navSelector);
-      if (nav) {
-        // insert at end of nav links
-        nav.appendChild(btn);
-      } else {
-        // fallback: append to header container
-        const header = document.querySelector('header .container') || document.querySelector('header');
-        if (header) header.appendChild(btn);
-        else document.body.insertBefore(btn, document.body.firstChild);
-      }
-    }
-
-    /* Insert floating CTA and show it after user scrolls a bit */
-    function setupFloatingCTA() {
-      const floatBtn = createFloatingCTA();
-      document.body.appendChild(floatBtn);
-
-      let shown = false;
-      function maybeShow() {
-        if (shown) return;
-        if (window.scrollY > 220 || window.innerHeight < 700) {
-          floatBtn.classList.add('show');
-          shown = true;
-        }
-      }
-      // show on scroll or after short delay on small screens
-      window.addEventListener('scroll', maybeShow, { passive: true });
-      setTimeout(maybeShow, 900);
-    }
-
-    /* Run insertion when DOM is ready */
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () {
-        insertHeaderButton();
-        setupFloatingCTA();
-      });
-    } else {
-      insertHeaderButton();
-      setupFloatingCTA();
-    }
-  })();
-</script>
-<!-- END: Fashion Box - Themed Inspiration Button -->
 /* ================== GLOBAL ================== */
 .container {
   max-width: 1200px;
@@ -2084,6 +1884,205 @@ window.addEventListener('scroll', () => {
   });
 })();
 </script>
+<!-- START: Fashion Box - Themed Inspiration Button (paste before </body>) -->
+<style>
+  /* Themed button styles (uses your CSS variables if present) */
+  :root {
+    --fb-pink: var(--pink, #d63384);
+    --fb-pink-dark: var(--pink-dark, #a61e63);
+    --fb-radius: 999px;
+    --fb-shadow: 0 12px 30px rgba(214,51,132,0.14);
+  }
 
+  /* Header nav button */
+  .inspiration-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
+    color: white;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    border: 2px solid rgba(255,255,255,0.06);
+    box-shadow: var(--fb-shadow);
+    background-image: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)), linear-gradient(180deg, var(--fb-pink), var(--fb-pink-dark));
+    background-origin: border-box;
+    transition: transform .22s cubic-bezier(.2,.9,.3,1), box-shadow .22s, opacity .22s;
+    transform: translateY(0);
+    will-change: transform, opacity;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .inspiration-btn:hover,
+  .inspiration-btn:focus {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(166,30,99,0.18);
+    outline: none;
+  }
+
+  .inspiration-btn:focus {
+    box-shadow: 0 0 0 4px rgba(214,51,132,0.12);
+  }
+
+  .inspiration-btn .icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+  }
+
+  /* Small "visited" pill */
+  .inspiration-btn.visited {
+    opacity: 0.92;
+    filter: saturate(.98);
+  }
+
+  /* Floating CTA (bottom-right) */
+  .inspiration-floating {
+    position: fixed;
+    right: 20px;
+    bottom: 22px;
+    z-index: 1600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)), linear-gradient(180deg, var(--fb-pink), var(--fb-pink-dark));
+    color: #fff;
+    box-shadow: 0 20px 50px rgba(166,30,99,0.18);
+    transform: translateY(18px);
+    opacity: 0;
+    transition: transform .36s cubic-bezier(.2,.9,.3,1), opacity .36s;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .inspiration-floating.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .inspiration-floating .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    box-shadow: inset 0 -4px 8px rgba(0,0,0,0.06);
+  }
+
+  /* Small responsive tweaks */
+  @media (max-width: 720px) {
+    .inspiration-btn { padding: 8px 12px; font-size: 0.9rem; }
+    .inspiration-floating { right: 14px; bottom: 16px; padding: 10px 12px; font-size: 0.9rem; }
+  }
+</style>
+
+<script>
+  (function () {
+    const targetUrl = 'https://fashion-box.github.io/fashion-box-inspirations/';
+    const navSelector = 'header nav'; // where to insert the button (falls back to body)
+    const btnId = 'fbInspirationBtn';
+    const floatingId = 'fbInspirationFloating';
+    const visitedKey = 'fb_inspiration_visited_v1';
+
+    /* Create the header button element */
+    function createHeaderButton() {
+      const a = document.createElement('a');
+      a.id = btnId;
+      a.className = 'inspiration-btn';
+      a.href = targetUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.setAttribute('aria-label', 'Open Fashion Box Inspirations (opens in new tab)');
+      a.innerHTML = '<span class="icon">★</span><span class="label">Inspirations</span>';
+      // mark visited if previously clicked
+      if (localStorage.getItem(visitedKey)) a.classList.add('visited');
+      // click handler to record visit and animate
+      a.addEventListener('click', function () {
+        localStorage.setItem(visitedKey, '1');
+        a.classList.add('visited');
+      });
+      return a;
+    }
+
+    /* Create floating CTA */
+    function createFloatingCTA() {
+      const a = document.createElement('a');
+      a.id = floatingId;
+      a.className = 'inspiration-floating';
+      a.href = targetUrl;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.setAttribute('aria-label', 'Open Inspirations');
+      a.innerHTML = '<span class="dot" aria-hidden="true"></span><span>Inspiration Boards</span>';
+      a.addEventListener('click', function () {
+        localStorage.setItem(visitedKey, '1');
+        // small pop animation
+        a.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.96)' }, { transform: 'scale(1)' }], { duration: 260 });
+      });
+      return a;
+    }
+
+    /* Insert header button into nav (or fallback to header container) */
+    function insertHeaderButton() {
+      const btn = createHeaderButton();
+      const nav = document.querySelector(navSelector);
+      if (nav) {
+        // insert at end of nav links
+        nav.appendChild(btn);
+      } else {
+        // fallback: append to header container
+        const header = document.querySelector('header .container') || document.querySelector('header');
+        if (header) header.appendChild(btn);
+        else document.body.insertBefore(btn, document.body.firstChild);
+      }
+    }
+
+    /* Insert floating CTA and show it after user scrolls a bit */
+    function setupFloatingCTA() {
+      const floatBtn = createFloatingCTA();
+      document.body.appendChild(floatBtn);
+
+      let shown = false;
+      function maybeShow() {
+        if (shown) return;
+        if (window.scrollY > 220 || window.innerHeight < 700) {
+          floatBtn.classList.add('show');
+          shown = true;
+        }
+      }
+      // show on scroll or after short delay on small screens
+      window.addEventListener('scroll', maybeShow, { passive: true });
+      setTimeout(maybeShow, 900);
+    }
+
+    /* Run insertion when DOM is ready */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        insertHeaderButton();
+        setupFloatingCTA();
+      });
+    } else {
+      insertHeaderButton();
+      setupFloatingCTA();
+    }
+  })();
+</script>
+<!-- END: Fashion Box - Themed Inspiration Button -->
 </body>
 </html>
