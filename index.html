@@ -894,6 +894,108 @@ footer a {
   </div>
 </section>
 
+<!-- START: Fashion Timeline (paste this directly after the Poetry section closing </section>) -->
+<section id="timeline" class="section" aria-label="Fashion timeline">
+  <div class="container">
+    <h2 class="section-title">Fashion Timeline</h2>
+    <p class="section-subtitle">Major revolutions and milestones that shaped global fashion — plus a dedicated timeline for India.</p>
+
+    <div class="timeline-tabs" role="tablist" aria-label="Timeline tabs" style="display:flex;gap:12px;justify-content:center;margin-bottom:18px;">
+      <button class="tab active" data-target="world" role="tab" aria-selected="true">World</button>
+      <button class="tab" data-target="india" role="tab" aria-selected="false">India</button>
+    </div>
+
+    <div class="timeline-wrap">
+      <!-- World timeline -->
+      <ol class="timeline-list" id="world" role="region" aria-hidden="false">
+        <li class="timeline-item">
+          <div class="year">18th–19th Century</div>
+          <div class="desc"><strong>Birth of haute couture</strong> — Paris becomes the epicenter of bespoke fashion and seasonal collections.</div>
+        </li>
+        <li class="timeline-item">
+          <div class="year">1920s</div>
+          <div class="desc"><strong>Modern ready-to-wear emerges</strong> and silhouettes shift to freer, functional forms; mass production begins to influence style.</div>
+        </li>
+        <li class="timeline-item">
+          <div class="year">1960s</div>
+          <div class="desc"><strong>Youth culture revolution</strong> — street style, mini-skirts and subcultural looks reshape mainstream fashion.</div>
+        </li>
+        <li class="timeline-item">
+          <div class="year">1980s–90s</div>
+          <div class="desc"><strong>Designer branding & globalization</strong> — luxury houses expand worldwide; fashion weeks and media amplify trends.</div>
+        </li>
+        <li class="timeline-item">
+          <div class="year">2000s–Present</div>
+          <div class="desc"><strong>Digital & sustainable turns</strong> — e-commerce, social media, and slow-fashion movements redefine production and consumption.</div>
+        </li>
+      </ol>
+
+      <!-- India timeline -->
+      <ol class="timeline-list" id="india" role="region" aria-hidden="true" style="display:none;">
+        <li class="timeline-item">
+          <div class="year">Ancient – Medieval</div>
+          <div class="desc"><strong>Textile traditions</strong> — regional weaving, dyeing and embroidery establish a rich sartorial heritage (sari, dhoti, regional crafts).</div>
+        </li>
+        <li class="timeline-item">
+          <div class="year">Mughal Era</div>
+          <div class="desc"><strong>Luxury textiles & courtly styles</strong> — brocades, zari and intricate motifs flourish under royal patronage.</div>
+        </li>
+        <li class="timeline-item">
+          <div class="year">Colonial Period</div>
+          <div class="desc"><strong>Hybrid styles</strong> — Western tailoring and Indian textiles intersect, changing urban dress codes.</div>
+        </li>
+        <li class="timeline-item">
+          <div class="year">1990s</div>
+          <div class="desc"><strong>Industry growth after liberalization</strong> — Indian designers and fashion weeks gain prominence; contemporary industry accelerates.</div>
+        </li>
+        <li class="timeline-item">
+          <div class="year">2000s–Present</div>
+          <div class="desc"><strong>Global recognition & craft revival</strong> — designers blend heritage with modernity; sustainability and artisanal partnerships rise.</div>
+        </li>
+      </ol>
+    </div>
+
+    <div style="text-align:center;margin-top:18px;color:var(--text-muted);font-size:.95rem;">
+      <em>Click a tab to switch timelines. Tap any item to expand for more detail.</em>
+    </div>
+  </div>
+
+  <style>
+    /* Timeline styles (self-contained) */
+    #timeline { background: linear-gradient(180deg,#fffaf7,#fff); padding:60px 0; }
+    .timeline-wrap { display:grid; grid-template-columns:1fr; gap:18px; margin-top:18px; }
+    .timeline-list { list-style:none; padding:0; margin:0; display:grid; gap:12px; }
+    .timeline-item { background:#fff; border-radius:14px; padding:16px; box-shadow:var(--shadow); display:flex; gap:14px; align-items:flex-start; cursor:pointer; transition:transform .25s; }
+    .timeline-item:hover { transform:translateY(-6px); }
+    .timeline-item .year { min-width:110px; font-weight:700; color:var(--pink); font-family:'Playfair Display',serif; }
+    .timeline-item .desc { color:var(--text-muted); line-height:1.5; }
+    .tab { background:#fff; border-radius:999px; padding:10px 18px; border:1px solid rgba(0,0,0,.06); cursor:pointer; font-weight:600; }
+    .tab.active { background:var(--pink); color:#fff; border-color:var(--pink); }
+    @media(max-width:900px){ .timeline-item { flex-direction:column; } .timeline-item .year { min-width:auto; } }
+  </style>
+
+  <script>
+    (function(){
+      const container = document.getElementById('timeline');
+      const tabs = container.querySelectorAll('.tab');
+      const world = document.getElementById('world');
+      const india = document.getElementById('india');
+      tabs.forEach(t => t.addEventListener('click', () => {
+        tabs.forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+        const target = t.dataset.target;
+        if(target==='world'){ world.style.display='block'; world.setAttribute('aria-hidden','false'); india.style.display='none'; india.setAttribute('aria-hidden','true'); }
+        else { india.style.display='block'; india.setAttribute('aria-hidden','false'); world.style.display='none'; world.setAttribute('aria-hidden','true'); }
+      }));
+      // Expand on click (simple accessible detail toggle)
+      container.querySelectorAll('.timeline-item').forEach(item=>{
+        item.addEventListener('click', ()=> item.classList.toggle('expanded'));
+      });
+    })();
+  </script>
+</section>
+<!-- END: Fashion Timeline -->
+
 <!-- NEW: Collaborations -->
 <section id="collaborations" class="section">
   <h2 class="section-title">Collaborations</h2>
