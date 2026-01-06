@@ -819,6 +819,376 @@ footer a {
     </div>
   </div>
 </section>
+ <!-- START: Social Feed Section (UPDATED with 37 random posts and formatted likes) -->
+<section id="social-feed" class="section" aria-label="Social feed">
+  <div class="container">
+    <h2 class="section-title">Studio Feed</h2>
+    <p class="section-subtitle">A private feed for your posts, reels and images — only you add posts through code. Likes are shown and persist locally.</p>
+
+    <div class="feed-controls" style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;">
+      <div style="color:var(--text-muted);font-size:.95rem;">Private posting area — add posts in the script's <code>posts</code> array.</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button id="loadNewBtn" class="feed-btn" title="Load newest">Newest</button>
+        <button id="loadMoreBtn" class="feed-btn" title="Load older">Load older</button>
+      </div>
+    </div>
+
+    <div id="feedGrid" class="feed-grid" aria-live="polite"></div>
+
+    <div id="feedPager" style="text-align:center;margin-top:18px;">
+      <button id="showMore" class="feed-btn">Show more posts</button>
+    </div>
+  </div>
+
+  <style>
+    /* Social feed styles (self-contained) */
+    #social-feed { background: linear-gradient(180deg,#fff,#fff7fb); padding:60px 0; }
+    .feed-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap:16px;
+    }
+    .post-card {
+      background:#fff;
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      display:flex;
+      flex-direction:column;
+      transition:transform .25s;
+      cursor:pointer;
+    }
+    .post-card:hover { transform:translateY(-6px); }
+    .post-media {
+      position:relative;
+      background:#f6f2ef;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:220px;
+      max-height:420px;
+      overflow:hidden;
+    }
+    .post-media img, .post-media video {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .post-meta {
+      padding:12px 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    .post-caption {
+      color:var(--text-muted);
+      font-size:.95rem;
+      flex:1;
+      margin-right:8px;
+    }
+    .likes {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:var(--pink);
+      font-weight:700;
+      font-size:.95rem;
+    }
+    .likes .heart {
+      width:18px;height:18px;border-radius:4px;display:inline-block;background:linear-gradient(180deg,#ffd6ea,#ffb3db);box-shadow:0 4px 10px rgba(214,51,132,.12);
+      display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;
+    }
+    .feed-btn {
+      background:#fff;
+      border:1px solid rgba(0,0,0,.06);
+      padding:8px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .feed-modal {
+      position:fixed;inset:0;background:rgba(12,10,9,.85);display:none;align-items:center;justify-content:center;z-index:3000;padding:20px;
+    }
+    .feed-modal.open { display:flex; }
+    .modal-card {
+      width:92%;max-width:980px;background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 60px rgba(10,10,10,.4);
+    }
+    .modal-media { background:#000; display:flex;align-items:center;justify-content:center;min-height:420px;max-height:78vh;overflow:hidden; }
+    .modal-media img, .modal-media video { max-width:100%; max-height:100%; object-fit:contain; display:block; }
+    .modal-body { padding:18px; display:flex;gap:18px; align-items:flex-start; justify-content:space-between; }
+    .modal-caption { color:var(--text-muted); flex:1; }
+    .modal-actions { display:flex;flex-direction:column;gap:12px;align-items:flex-end;min-width:120px; }
+    .modal-actions .likes { font-size:1.2rem; }
+    .close-btn { background:transparent;border:none;font-size:20px;cursor:pointer;color:var(--text-dark); }
+    @media(max-width:900px){ .modal-body { flex-direction:column; align-items:stretch; } .modal-actions { align-items:flex-start; } }
+  </style>
+
+  <div id="feedModal" class="feed-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-card" role="document">
+      <div style="display:flex;justify-content:flex-end;padding:8px;">
+        <button id="modalClose" class="close-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-media" id="modalMedia"></div>
+      <div class="modal-body">
+        <div class="modal-caption" id="modalCaption"></div>
+        <div class="modal-actions">
+          <div class="likes" id="modalLikes"><span class="heart">❤</span><span id="modalLikesCount">0</span></div>
+          <div style="color:var(--text-muted);font-size:.9rem;" id="modalDate"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      /* -------------------------
+         Add posts here (edit this array)
+         Each post object:
+         { id: 'p1', type: 'image'|'video'|'reel', src: 'URL or path', caption: 'Short text', likes: 1200, date: '2025-01-01' }
+         ------------------------- */
+      const posts = [
+        { id:'p001', type:'image', src:'https://images.unsplash.com/photo-1520975923398-18f86a0b6f3f', caption:'Blush textures and drape', likes: 12800, date:'2025-01-01' },
+        { id:'p002', type:'image', src:'https://images.unsplash.com/photo-1542206395-9feb3edaa68b', caption:'Cream & beige study', likes: 9400, date:'2025-01-03' },
+        { id:'p003', type:'video', src:'https://raw.githubusercontent.com/FashionBox-crafted-for-your-vibe/Fashion-Box/bbd33d5cc6bb2c2488e379ffcffd54eaee0db482/Beige%20and%20Brown%20Modern%20Fashion%20Forward%20Instagram%20Story%20Video%20(1).mp4', caption:'Studio reel — weave details', likes: 210000, date:'2025-01-05' },
+
+        /* 37 random posts (IDs p004 - p040) */
+        { id:'p004', type:'image', src:'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb', caption:'Evening silhouette study', likes: 2300, date:'2025-01-06' },
+        { id:'p005', type:'image', src:'https://images.unsplash.com/photo-1491553895911-0055eca6402d', caption:'Drapes and light', likes: 5300, date:'2025-01-07' },
+        { id:'p006', type:'image', src:'https://images.unsplash.com/photo-1495121605193-b116b5b09a6f', caption:'Hand-stitched motif', likes: 12600, date:'2025-01-08' },
+        { id:'p007', type:'video', src:'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', caption:'Runway clip — fall edit', likes: 278000, date:'2025-01-09' },
+        { id:'p008', type:'image', src:'https://images.unsplash.com/photo-1520975914083-8b7f6b2f3b6b', caption:'Textile close-up', likes: 7200, date:'2025-01-10' },
+        { id:'p009', type:'image', src:'https://images.unsplash.com/photo-1520975923398-18f86a0b6f3f?ixlib=rb-1.2.1', caption:'Studio moodboard', likes: 15400, date:'2025-01-11' },
+        { id:'p010', type:'image', src:'https://images.unsplash.com/photo-1514996937319-344454492b37', caption:'Seam details', likes: 4300, date:'2025-01-12' },
+        { id:'p011', type:'image', src:'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?ixlib=rb-1.2.1', caption:'Bridal blush study', likes: 26000, date:'2025-01-13' },
+        { id:'p012', type:'video', src:'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', caption:'Weave reel', likes: 9800, date:'2025-01-14' },
+        { id:'p013', type:'image', src:'https://images.unsplash.com/photo-1520975923398-18f86a0b6f3f', caption:'Palette exploration', likes: 53000, date:'2025-01-15' },
+        { id:'p014', type:'image', src:'https://images.unsplash.com/photo-1542206395-9feb3edaa68b?ixlib=rb-1.2.1', caption:'Linen textures', likes: 4100, date:'2025-01-16' },
+        { id:'p015', type:'image', src:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?ixlib=rb-1.2.1', caption:'Studio light test', likes: 11200, date:'2025-01-17' },
+        { id:'p016', type:'image', src:'https://images.unsplash.com/photo-1495121605193-b116b5b09a6f?ixlib=rb-1.2.1', caption:'Pattern making', likes: 7600, date:'2025-01-18' },
+        { id:'p017', type:'video', src:'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', caption:'Behind the scenes reel', likes: 18900, date:'2025-01-19' },
+        { id:'p018', type:'image', src:'https://images.unsplash.com/photo-1520975914083-8b7f6b2f3b6b?ixlib=rb-1.2.1', caption:'Artisan hands', likes: 27500, date:'2025-01-20' },
+        { id:'p019', type:'image', src:'https://images.unsplash.com/photo-1514996937319-344454492b37?ixlib=rb-1.2.1', caption:'Evening fabric', likes: 6400, date:'2025-01-21' },
+        { id:'p020', type:'image', src:'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format', caption:'Minimal silhouette', likes: 9200, date:'2025-01-22' },
+        { id:'p021', type:'image', src:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format', caption:'Accessory study', likes: 10300, date:'2025-01-23' },
+        { id:'p022', type:'video', src:'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', caption:'Fabric drape reel', likes: 36000, date:'2025-01-24' },
+        { id:'p023', type:'image', src:'https://images.unsplash.com/photo-1495121605193-b116b5b09a6f?auto=format', caption:'Color block test', likes: 5200, date:'2025-01-25' },
+        { id:'p024', type:'image', src:'https://images.unsplash.com/photo-1520975923398-18f86a0b6f3f?auto=format', caption:'Studio vignette', likes: 21400, date:'2025-01-26' },
+        { id:'p025', type:'image', src:'https://images.unsplash.com/photo-1542206395-9feb3edaa68b?auto=format', caption:'Handloom highlight', likes: 4700, date:'2025-01-27' },
+        { id:'p026', type:'image', src:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format', caption:'Tailoring detail', likes: 15800, date:'2025-01-28' },
+        { id:'p027', type:'video', src:'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', caption:'Lookbook snippet', likes: 278000, date:'2025-01-29' },
+        { id:'p028', type:'image', src:'https://images.unsplash.com/photo-1495121605193-b116b5b09a6f?auto=format', caption:'Soft palette', likes: 8300, date:'2025-01-30' },
+        { id:'p029', type:'image', src:'https://images.unsplash.com/photo-1520975914083-8b7f6b2f3b6b?auto=format', caption:'Craft study', likes: 19600, date:'2025-01-31' },
+        { id:'p030', type:'image', src:'https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format', caption:'Evening drape', likes: 12500, date:'2025-02-01' },
+        { id:'p031', type:'image', src:'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format', caption:'Monochrome test', likes: 5400, date:'2025-02-02' },
+        { id:'p032', type:'video', src:'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', caption:'Stitching reel', likes: 72000, date:'2025-02-03' },
+        { id:'p033', type:'image', src:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format', caption:'Bridal detail', likes: 26400, date:'2025-02-04' },
+        { id:'p034', type:'image', src:'https://images.unsplash.com/photo-1495121605193-b116b5b09a6f?auto=format', caption:'Texture play', likes: 47000, date:'2025-02-05' },
+        { id:'p035', type:'image', src:'https://images.unsplash.com/photo-1520975923398-18f86a0b6f3f?auto=format', caption:'Studio still life', likes: 83000, date:'2025-02-06' },
+        { id:'p036', type:'image', src:'https://images.unsplash.com/photo-1542206395-9feb3edaa68b?auto=format', caption:'Neutral study', likes: 11200, date:'2025-02-07' },
+        { id:'p037', type:'image', src:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format', caption:'Evening textures', likes: 3900, date:'2025-02-08' },
+        { id:'p038', type:'video', src:'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4', caption:'Studio reel — final', likes: 520000, date:'2025-02-09' },
+        { id:'p039', type:'image', src:'https://images.unsplash.com/photo-1495121605193-b116b5b09a6f?auto=format', caption:'Craft revival', likes: 2700, date:'2025-02-10' },
+        { id:'p040', type:'image', src:'https://images.unsplash.com/photo-1520975914083-8b7f6b2f3b6b?auto=format', caption:'Signature stitch', likes: 158000, date:'2025-02-11' }
+      ];
+
+      /* -------------------------
+         Configuration
+         ------------------------- */
+      const BATCH = 9; // posts per "page" load
+      let loaded = 0;
+      const feedGrid = document.getElementById('feedGrid');
+      const showMoreBtn = document.getElementById('showMore');
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      const loadNewBtn = document.getElementById('loadNewBtn');
+
+      /* Likes persistence */
+      const LS_KEY = 'studio_feed_likes_v1';
+      const storedLikes = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+
+      function getLikes(id, defaultVal){
+        return storedLikes[id] !== undefined ? storedLikes[id] : defaultVal;
+      }
+      function setLikes(id, val){
+        storedLikes[id] = val;
+        localStorage.setItem(LS_KEY, JSON.stringify(storedLikes));
+      }
+
+      /* Format likes into compact form (e.g., 2300 -> 2.3k, 278000 -> 278k) */
+      function formatLikes(n){
+        if (n >= 1000000) {
+          return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1).replace(/\.0$/,'') + 'M';
+        }
+        if (n >= 1000) {
+          const v = n / 1000;
+          // show one decimal only when needed (e.g., 5.3k)
+          return (v % 1 === 0) ? Math.round(v) + 'k' : v.toFixed(1).replace(/\.0$/,'') + 'k';
+        }
+        return String(n);
+      }
+
+      /* Render a single post card */
+      function renderPostCard(post){
+        const card = document.createElement('article');
+        card.className = 'post-card';
+        card.tabIndex = 0;
+        card.setAttribute('data-id', post.id);
+
+        const mediaWrap = document.createElement('div');
+        mediaWrap.className = 'post-media';
+        if(post.type === 'video' || post.type === 'reel'){
+          const vid = document.createElement('video');
+          vid.src = post.src;
+          vid.muted = true;
+          vid.loop = true;
+          vid.preload = 'metadata';
+          vid.playsInline = true;
+          vid.setAttribute('aria-hidden','true');
+          vid.style.maxHeight = '100%';
+          mediaWrap.appendChild(vid);
+          // autoplay on hover for preview
+          mediaWrap.addEventListener('mouseenter', ()=>{ vid.play().catch(()=>{}); });
+          mediaWrap.addEventListener('mouseleave', ()=>{ vid.pause(); vid.currentTime = 0; });
+        } else {
+          const img = document.createElement('img');
+          img.src = post.src;
+          img.alt = post.caption || 'Post image';
+          mediaWrap.appendChild(img);
+        }
+
+        const meta = document.createElement('div');
+        meta.className = 'post-meta';
+        const caption = document.createElement('div');
+        caption.className = 'post-caption';
+        caption.textContent = post.caption || '';
+        const likes = document.createElement('div');
+        likes.className = 'likes';
+        const currentLikes = getLikes(post.id, post.likes);
+        likes.innerHTML = '<span class="heart">❤</span><span class="count">' + formatLikes(currentLikes) + '</span>';
+
+        meta.appendChild(caption);
+        meta.appendChild(likes);
+
+        card.appendChild(mediaWrap);
+        card.appendChild(meta);
+
+        // open modal on click
+        card.addEventListener('click', ()=> openModal(post));
+        // keyboard accessibility
+        card.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(post); } });
+
+        return card;
+      }
+
+      /* Load next batch (older posts) */
+      function loadNextBatch(){
+        const start = loaded;
+        const end = Math.min(posts.length, loaded + BATCH);
+        for(let i=start;i<end;i++){
+          const card = renderPostCard(posts[i]);
+          feedGrid.appendChild(card);
+        }
+        loaded = end;
+        updatePager();
+      }
+
+      /* Load newest (reset and show newest first) */
+      function loadNewest(){
+        feedGrid.innerHTML = '';
+        // show newest first by date
+        posts.sort((a,b)=> new Date(b.date) - new Date(a.date));
+        loaded = 0;
+        loadNextBatch();
+      }
+
+      function updatePager(){
+        if(loaded >= posts.length){
+          showMoreBtn.style.display = 'none';
+        } else {
+          showMoreBtn.style.display = 'inline-block';
+        }
+      }
+
+      /* Modal viewer */
+      const modal = document.getElementById('feedModal');
+      const modalMedia = document.getElementById('modalMedia');
+      const modalCaption = document.getElementById('modalCaption');
+      const modalLikes = document.getElementById('modalLikesCount');
+      const modalDate = document.getElementById('modalDate');
+      const modalClose = document.getElementById('modalClose');
+
+      function openModal(post){
+        modal.setAttribute('aria-hidden','false');
+        modal.classList.add('open');
+        modalMedia.innerHTML = '';
+        if(post.type === 'video' || post.type === 'reel'){
+          const v = document.createElement('video');
+          v.src = post.src;
+          v.controls = true;
+          v.autoplay = true;
+          v.playsInline = true;
+          v.style.maxHeight = '78vh';
+          modalMedia.appendChild(v);
+        } else {
+          const img = document.createElement('img');
+          img.src = post.src;
+          img.alt = post.caption || '';
+          modalMedia.appendChild(img);
+        }
+        modalCaption.textContent = post.caption || '';
+        const current = getLikes(post.id, post.likes);
+        modalLikes.textContent = formatLikes(current);
+        modalDate.textContent = post.date || '';
+        // allow clicking heart in modal to increment likes
+        modalLikes.parentElement.onclick = function(e){
+          e.stopPropagation();
+          const numericCurrent = getLikes(post.id, post.likes);
+          const next = numericCurrent + 1;
+          setLikes(post.id, next);
+          modalLikes.textContent = formatLikes(next);
+          // update grid count
+          const gridCount = document.querySelector('.post-card[data-id="'+post.id+'"] .likes .count');
+          if(gridCount) gridCount.textContent = formatLikes(next);
+        };
+      }
+
+      function closeModal(){
+        modal.setAttribute('aria-hidden','true');
+        modal.classList.remove('open');
+        modalMedia.innerHTML = '';
+      }
+
+      modalClose.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+      /* Controls */
+      showMoreBtn.addEventListener('click', loadNextBatch);
+      loadMoreBtn.addEventListener('click', loadNextBatch);
+      loadNewBtn.addEventListener('click', loadNewest);
+
+      /* Initialize feed: preserve order as defined (you can reorder posts array) */
+      loadNextBatch();
+
+      /* Accessibility: announce when more posts loaded */
+      function announce(msg){
+        const live = document.createElement('div');
+        live.setAttribute('aria-live','polite');
+        live.style.position='absolute';live.style.left='-9999px';
+        live.textContent = msg;
+        document.body.appendChild(live);
+        setTimeout(()=>document.body.removeChild(live),1000);
+      }
+
+      // Notes:
+      // - To add more posts, append objects to the `posts` array above.
+      // - Likes are stored as numeric values in localStorage; displayed compactly (k, M).
+      // - Clicking the heart area in the modal increments the numeric like count and updates the display.
+    })();
+  </script>
+</section>
+<!-- END: Social Feed Section -->
 
 <!-- NEW: Behind-the-Scenes -->
 <section id="behind-the-scenes" class="section">
@@ -956,7 +1326,7 @@ footer a {
     </div>
 
     <div style="text-align:center;margin-top:18px;color:var(--text-muted);font-size:.95rem;">
-      <em>Click a tab to switch timelines between India and World fashion journey.</em>
+      <em>Click a tab to switch timelines. Tap any item to expand for more detail.</em>
     </div>
   </div>
 
