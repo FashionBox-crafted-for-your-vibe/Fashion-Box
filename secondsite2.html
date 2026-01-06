@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fashion Box — Inspirations</title>
+
+<link rel="icon" href="https://raw.githubusercontent.com/yadavaarnav19-sketch/Fashion-Box/refs/heads/main/logo.png">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#d63384;
+  --pink-dark:#a61e63;
+  --pink-light:#fff0f6;
+  --text-dark:#2a2a2a;
+  --text-muted:#666;
+  --radius:18px;
+  --shadow:0 20px 40px rgba(0,0,0,.08);
+  --card-bg: #fffaf7;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;
+  color:var(--text-dark);
+  background:#fff;
+  line-height:1.6;
+}
+
+/* Layout */
+.container{max-width:1200px;margin:auto;padding:0 24px}
+.section{padding:80px 0}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:2.4rem;
+  color:var(--pink);
+  text-align:center;
+}
+.section-subtitle{
+  text-align:center;color:var(--text-muted);max-width:820px;margin:12px auto 40px;
+}
+
+/* Header (simple link back) */
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 24px;
+  border-bottom:1px solid rgba(0,0,0,.04);
+  background: linear-gradient(180deg, rgba(255,240,246,.6), rgba(255,255,255,0.6));
+  position:sticky; top:0; z-index:50;
+}
+.header .brand{display:flex;align-items:center;gap:12px;font-family:'Playfair Display',serif;color:var(--pink);font-size:1.1rem}
+.header a.cta{background:var(--pink);color:#fff;padding:10px 16px;border-radius:999px;text-decoration:none;font-weight:600;box-shadow:var(--shadow)}
+
+/* Hero */
+.hero{
+  background: linear-gradient(135deg,#ffe4ef,#ffffff);
+  padding:100px 0;
+  text-align:center;
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:3rem;color:var(--pink);
+}
+.hero p{margin:18px auto;color:var(--text-muted);max-width:760px;font-size:1.05rem}
+.hero .btn{background:var(--pink);color:#fff;padding:12px 28px;border-radius:40px;text-decoration:none;font-weight:600;box-shadow:var(--shadow);display:inline-block;margin-top:18px}
+.hero .btn:hover{background:var(--pink-dark);transform:translateY(-3px)}
+
+/* Timeline */
+.timeline{display:grid;gap:18px;margin-top:28px}
+.timeline-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.timeline-item{background:var(--card-bg);padding:18px;border-radius:14px;box-shadow:var(--shadow)}
+.timeline-item h3{color:var(--pink);font-family:'Playfair Display',serif;margin-bottom:8px}
+.timeline-item p{color:var(--text-muted)}
+
+/* Gallery */
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+.gallery-item{position:relative;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);background:#fff}
+.gallery-item img{width:100%;height:360px;object-fit:cover;display:block;transition:transform .45s}
+.gallery-item:hover img{transform:scale(1.06)}
+.gallery-caption{position:absolute;left:0;right:0;bottom:0;padding:14px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.45));color:#fff;font-weight:600}
+
+/* Spotlight */
+.spotlight{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:18px}
+.spot-card{background:#fff;padding:18px;border-radius:14px;box-shadow:var(--shadow);text-align:center}
+.spot-card img{width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block}
+.spot-card h4{color:var(--pink);margin-bottom:6px;font-family:'Playfair Display',serif}
+.spot-card p{color:var(--text-muted);font-size:.95rem}
+
+/* Quote wall */
+.quote-wall{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}
+.quote{background:linear-gradient(180deg,#fff,#fffaf7);padding:18px;border-radius:14px;box-shadow:var(--shadow);font-family:'Playfair Display',serif;color:var(--text-dark);font-size:1.05rem;text-align:center}
+
+/* Workshops & Events (replacement section) */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+.event-card{background:#fff;padding:18px;border-radius:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+.event-card h4{color:var(--pink);font-family:'Playfair Display',serif;margin:0}
+.event-meta{color:var(--text-muted);font-size:.95rem}
+.event-desc{color:var(--text-dark);line-height:1.5}
+.event-actions{margin-top:auto;display:flex;gap:10px;align-items:center}
+.event-actions a{background:var(--pink);color:#fff;padding:8px 12px;border-radius:999px;text-decoration:none;font-weight:600;box-shadow:var(--shadow)}
+.event-badge{background:linear-gradient(180deg,#fff0f6,#ffdfee);color:var(--pink);padding:6px 10px;border-radius:999px;font-weight:700;font-size:.85rem}
+
+/* Footer */
+footer{background:var(--pink);color:#fff;padding:36px 0;margin-top:40px;text-align:center}
+footer a{color:#fff;text-decoration:none}
+
+/* Responsive tweaks */
+@media(max-width:900px){
+  .cta-panel{flex-direction:column;align-items:stretch;text-align:center}
+  .cta-panel .left{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="brand">
+    <img src="https://raw.githubusercontent.com/yadavaarnav19-sketch/Fashion-Box/refs/heads/main/logo.png" alt="Fashion Box" style="width:40px;border-radius:8px">
+    Fashion Box Inspirations
+  </div>
+  <div>
+    <a class="cta" href="https://fashionbox-crafted-for-your-vibe.github.io/Fashion-Box/">Back to Fashion Box</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <h1>Where Craft Meets Tomorrow</h1>
+    <p>Curated editorials, trend forecasts and designer voices — a quiet, pink room for ideas that linger. This page is an extension of Fashion Box: thoughtful, tactile and made to inspire.</p>
+    <a class="btn" href="#gallery">Explore the Gallery</a>
+  </div>
+</section>
+
+<!-- TREND TIMELINE -->
+<section class="section" id="trends">
+  <div class="container">
+    <h2 class="section-title">Trend Timeline</h2>
+    <p class="section-subtitle">Short-term movements and long-term shifts shaping the next seasons.</p>
+
+    <div class="timeline-grid">
+      <div class="timeline-item">
+        <h3>Digital Couture (2026)</h3>
+        <p>Augmented fittings and bespoke digital garments create new avenues for luxury ownership and storytelling.</p>
+      </div>
+
+      <div class="timeline-item">
+        <h3>Sustainable Silhouettes (2027)</h3>
+        <p>Regenerative fibers and repair-first design become standard language across ateliers and high-street alike.</p>
+      </div>
+
+      <div class="timeline-item">
+        <h3>Heritage Revival (2028)</h3>
+        <p>Regional crafts are reinterpreted with contemporary tailoring — a renewed respect for provenance and makers.</p>
+      </div>
+
+      <div class="timeline-item">
+        <h3>Quiet Luxury (Ongoing)</h3>
+        <p>Understated finishes, elevated basics and longevity over flash define a quieter, more considered wardrobe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDITORIAL GALLERY -->
+<section class="section" id="gallery">
+  <div class="container">
+    <h2 class="section-title">Editorial Gallery</h2>
+    <p class="section-subtitle">A selection of images that echo the Fashion Box palette — blush, cream and tactile neutrals.</p>
+
+    <div class="gallery">
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1520975923398-18f86a0b6f3f?q=80&w=1600&auto=format&fit=crop" alt="Romantic blush gown">
+        <div class="gallery-caption">Romantic blush gown in studio light</div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1542206395-9feb3edaa68b?q=80&w=1600&auto=format&fit=crop" alt="Cream & beige couture">
+        <div class="gallery-caption">Cream & beige couture portrait</div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1600&auto=format&fit=crop" alt="Avant-garde headpiece">
+        <div class="gallery-caption">Avant-garde pink headpiece</div>
+      </div>
+
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1495121605193-b116b5b09a6f?q=80&w=1600&auto=format&fit=crop" alt="Hand-stitched motif">
+        <div class="gallery-caption">Hand-stitched motif and texture study</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGNER SPOTLIGHT -->
+<section class="section" id="spotlight">
+  <div class="container">
+    <h2 class="section-title">Designer Spotlight</h2>
+    <p class="section-subtitle">Profiles of makers and designers whose work resonates with our ethos.</p>
+
+    <div class="spotlight">
+      <div class="spot-card">
+        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" alt="Anaya Verma">
+        <h4>Anaya Verma</h4>
+        <p>Textile reinterpretation in blush couture — Anaya blends handloom techniques with modern silhouettes.</p>
+      </div>
+
+      <div class="spot-card">
+        <img src="https://images.unsplash.com/photo-1545996124-1b1e85d6b26a?q=80&w=800&auto=format&fit=crop" alt="R. Kapoor">
+        <h4>R. Kapoor</h4>
+        <p>Stylist and creative director — known for editorial evening silhouettes and refined color stories.</p>
+      </div>
+
+      <div class="spot-card">
+        <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=800&auto=format&fit=crop" alt="Kala Crafts">
+        <h4>Kala Crafts</h4>
+        <p>Artisan atelier — a collective preserving embroidery techniques and collaborating on limited collections.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE WALL -->
+<section class="section" id="quotes">
+  <div class="container">
+    <h2 class="section-title">Quote Wall</h2>
+    <p class="section-subtitle">Words that linger — a small library of lines we return to when designing.</p>
+
+    <div class="quote-wall" id="quoteWall">
+      <div class="quote">"Clothes are like a good story — they reveal what the heart has been whispering." — Fashion Box</div>
+      <div class="quote">"Elegance is not about being noticed, it's about being remembered." — Giorgio Armani</div>
+      <div class="quote">"Each stitch holds a memory; each seam, a promise." — House Notes</div>
+      <div class="quote">"Simplicity is the keynote of all true elegance." — Coco Chanel</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div style="max-width:900px;margin:auto">
+      <strong>Fashion Box</strong>
+      <div style="margin-top:8px;color:rgba(255,255,255,.9)">Luxury Pink Fashion — slow, considered and crafted with care.</div>
+      <div style="margin-top:12px;opacity:.9">
+        <a href="https://fashionbox-crafted-for-your-vibe.github.io/Fashion-Box/">Return to Fashion Box</a> · <a href="#trends">Trends</a> · <a href="#gallery">Gallery</a>
+      </div>
+    </div>
+    <div style="margin-top:18px;font-size:.9rem;opacity:.9">© <span id="year"></span> Fashion Box</div>
+  </div>
+</footer>
+
+<script>
+  // small script: rotate quotes every 6s and set year
+  (function(){
+    const wall = document.getElementById('quoteWall');
+    const quotes = Array.from(wall.children);
+    let idx = 0;
+    function rotate(){
+      quotes.forEach((q,i)=> q.style.display = i === idx ? 'block' : 'none');
+      idx = (idx + 1) % quotes.length;
+    }
+    rotate();
+    setInterval(rotate, 6000);
+
+    // set current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  })();
+</script>
+
+</body>
+</html>
